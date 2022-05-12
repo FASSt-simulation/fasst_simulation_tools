@@ -273,7 +273,8 @@ EOF
 
 #elif [[ $output_freq = "H" ]]; then
 
-else 
+elif [[ $output_freq = "FAST" ]]; then
+#else 
 echo "*** Setting default output frequency ***"
 cat >> user_nl_clm <<EOF
 !paramfile =/path/to/custom/paramfile.nc

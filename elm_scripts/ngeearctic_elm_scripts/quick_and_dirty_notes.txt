@@ -6,7 +6,11 @@ docker run -t -i --hostname=docker --user $(id -u):$(id -g) -v /Users/sserbin/Da
 fasstsimulation/elm-builds:release-v1.2.0_ngeearctic-latest \
 /scripts/met_scripts/ngeearctic/download_elm_singlesite_forcing_data.sh
 
-
+export container=fasstsimulation/elm-builds:release-v1.2.0_ngeearctic-latest
+export host_location=/Users/sserbin/Data/testing
+export repo=/Users/sserbin/Data/GitHub/fasst_simulation_tools
+docker run -t -i --hostname=docker --user $(id -u):$(id -g) -v $host_location:/inputdata \
+-v $repo:/scripts $container scripts/met_scripts/ngeearctic/download_elm_singlesite_forcing_data.sh
 
 
 
@@ -50,13 +54,13 @@ docker run -t -i --hostname=docker --user $(id -u):$(id -g) -v /Users/sserbin/Da
 -v /Users/sserbin/Data/GitHub/fasst_simulation_tools/elm_scripts/ngeearctic_elm_scripts:/scripts -v ~/scratch/elm_testruns:/output \
 fasstsimulation/elm-builds:release-v1.2.0_ngeearctic-latest /scripts/./1x1pt_US-Brw_elm_final_spinup_cpl_bypass.sh --case_root=/output \
 --site_name=1x1pt_US-Brw --start_year='0001-01-01' --num_years=250 --num_rest_years=5 --run_ref_date=0011-01-01 \
---output_vars=/scripts/output_vars_2.txt --compset=ICB1850CNPRDCTCBC --rmachine=docker
+--output_vars=/scripts/output_vars_2.txt --output_freq=FAST --compset=ICB1850CNPRDCTCBC --rmachine=docker
 
 0251-01-01
 
 docker run -t -i --hostname=docker --user $(id -u):$(id -g) -v /Users/sserbin/Data/single_point_cesm_input_datasets:/inputdata \
 -v ~/scratch/elm_testruns:/output fasstsimulation/elm-builds:release-v1.2.0_ngeearctic-latest \
-/bin/sh -c 'cd /output/1x1pt_US-Brw_ELM_ICB1850CNPRDCTCBC_ad_spinup && ./case.submit'
+/bin/sh -c 'cd /output/1x1pt_US-Brw_ELM_ICB1850CNPRDCTCBC_final_spinup && ./case.submit'
 
 
 
