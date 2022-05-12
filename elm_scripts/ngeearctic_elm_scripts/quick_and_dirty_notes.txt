@@ -1,0 +1,101 @@
+Quick and dirty notes
+
+# get met data! this example works on my desktop
+docker run -t -i --hostname=docker --user $(id -u):$(id -g) -v /Users/sserbin/Data/testing:/inputdata \
+-v /Users/sserbin/Data/GitHub/fasst_simulation_tools:/scripts \
+fasstsimulation/elm-builds:release-v1.2.0_ngeearctic-latest \
+/scripts/met_scripts/ngeearctic/download_elm_singlesite_forcing_data.sh
+
+
+
+
+
+
+
+ICB1850CNRDCTCBC
+ICB1850CNRDCTCBC
+
+ICB1850CNPRDCTCBC
+
+docker run -t -i --hostname=docker --user $(id -u):$(id -g) -v /Users/sserbin/Data/single_point_cesm_input_datasets:/inputdata \
+-v /Users/sserbin/Data/GitHub/fasst_simulation_tools/elm_scripts/ngeearctic_elm_scripts:/scripts -v ~/scratch/elm_testruns:/output \
+fasstsimulation/elm-builds:release-v1.2.0_ngeearctic-latest /scripts/./1x1pt_US-Brw_elm_ad_spinup_cpl_bypass.sh --case_root=/output \
+--site_name=1x1pt_US-Brw --start_year='0001-01-01' --num_years=250 --num_rest_years=5 --output_vars=/scripts/output_vars_2.txt \
+--output_freq=H --compset=ICB1850CNPRDCTCBC --rmachine=docker
+
+# not hourly output - for now calling this "FAST" but need a better way we define what frequency we use for spin up
+# my guess is we dont need hourly for spin up. instead we will care about hourly etc for the transient final run that
+# people will use to compare to data
+docker run -t -i --hostname=docker --user $(id -u):$(id -g) -v /Users/sserbin/Data/single_point_cesm_input_datasets:/inputdata \
+-v /Users/sserbin/Data/GitHub/fasst_simulation_tools/elm_scripts/ngeearctic_elm_scripts:/scripts -v ~/scratch/elm_testruns:/output \
+fasstsimulation/elm-builds:release-v1.2.0_ngeearctic-latest /scripts/./1x1pt_US-Brw_elm_ad_spinup_cpl_bypass.sh --case_root=/output \
+--site_name=1x1pt_US-Brw --start_year='0001-01-01' --num_years=250 --num_rest_years=5 --output_vars=/scripts/output_vars_2.txt \
+--output_freq=FAST --compset=ICB1850CNPRDCTCBC --rmachine=docker
+
+# not hourly output - very short run to double check restart naming. 10 year run
+docker run -t -i --hostname=docker --user $(id -u):$(id -g) -v /Users/sserbin/Data/single_point_cesm_input_datasets:/inputdata \
+-v /Users/sserbin/Data/GitHub/fasst_simulation_tools/elm_scripts/ngeearctic_elm_scripts:/scripts -v ~/scratch/elm_testruns:/output \
+fasstsimulation/elm-builds:release-v1.2.0_ngeearctic-latest /scripts/./1x1pt_US-Brw_elm_ad_spinup_cpl_bypass.sh --case_root=/output \
+--site_name=1x1pt_US-Brw --start_year='0001-01-01' --num_years=10 --num_rest_years=5 --output_vars=/scripts/output_vars_2.txt \
+--output_freq=FAST --compset=ICB1850CNPRDCTCBC --rmachine=docker
+
+
+docker run -t -i --hostname=docker --user $(id -u):$(id -g) -v /Users/sserbin/Data/single_point_cesm_input_datasets:/inputdata \
+-v ~/scratch/elm_testruns:/output fasstsimulation/elm-builds:release-v1.2.0_ngeearctic-latest \
+/bin/sh -c 'cd /output/1x1pt_US-Brw_ELM_ICB1850CNPRDCTCBC_ad_spinup && ./case.submit'
+# make this run as a background process within the container? but then how will we know when its done? hmmm
+
+
+docker run -t -i --hostname=docker --user $(id -u):$(id -g) -v /Users/sserbin/Data/single_point_cesm_input_datasets:/inputdata \
+-v /Users/sserbin/Data/GitHub/fasst_simulation_tools/elm_scripts/ngeearctic_elm_scripts:/scripts -v ~/scratch/elm_testruns:/output \
+fasstsimulation/elm-builds:release-v1.2.0_ngeearctic-latest /scripts/./1x1pt_US-Brw_elm_final_spinup_cpl_bypass.sh --case_root=/output \
+--site_name=1x1pt_US-Brw --start_year='0001-01-01' --num_years=250 --num_rest_years=5 --run_ref_date=0011-01-01 \
+--output_vars=/scripts/output_vars_2.txt --compset=ICB1850CNPRDCTCBC --rmachine=docker
+
+0251-01-01
+
+docker run -t -i --hostname=docker --user $(id -u):$(id -g) -v /Users/sserbin/Data/single_point_cesm_input_datasets:/inputdata \
+-v ~/scratch/elm_testruns:/output fasstsimulation/elm-builds:release-v1.2.0_ngeearctic-latest \
+/bin/sh -c 'cd /output/1x1pt_US-Brw_ELM_ICB1850CNPRDCTCBC_ad_spinup && ./case.submit'
+
+
+
+ICB1850CNPRDCTCBC
+ICB1850CNPRDCTCBC
+
+
+# For historical:
+# compset="ICB20TRCNPRDCTCBC"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+docker run -t -i --hostname=docker --user $(id -u):$(id -g) -v /Users/sserbin/Data/single_point_cesm_input_datasets:/inputdata \
+-v /Users/sserbin/Data/GitHub/simulation_containers/scripts/hlm-fates/elm_run_scripts:/scripts -v ~/scratch/ctsm_fates:/output \
+test_ngee_elm /scripts/./1x1pt_US-Brw_test_case_e3sm_cpl_bypass.sh --case_root=/output \
+--site_name=1x1pt_US-Brw --start_year='1985-01-01' --num_years=20 --output_vars=/scripts/output_vars.txt \
+--met_start=1985 --met_end=2015 --resolution=CLM_USRDAT --compset=I1850CNPRDCTCBC
+
+docker run -t -i --hostname=docker --user $(id -u):$(id -g) -v /Users/sserbin/Data/single_point_cesm_input_datasets:/inputdata \
+-v ~/scratch/ctsm_fates:/output test_ngee_elm /bin/sh -c 'cd /output/1x1pt_US-Brw.ELM.I1850CNPRDCTCBC.1648748600/ && ./case.submit'
+
+
+docker run -t -i --hostname=docker --user $(id -u):$(id -g) -v /Users/sserbin/Data/single_point_cesm_input_datasets:/inputdata \
+-v ~/scratch/ctsm_fates:/output \
+fasstsimulation/elm-builds:release-v1.2.0_ngeearctic-latest /scripts/./1x1pt_US-Brw_test_case_e3sm_cpl_bypass.sh \
+--case_root=/output --site_name=1x1pt_US-Brw --start_year='1901-01-01' --num_years=120--output_vars=/scripts/output_vars.txt \
+--met_start=1985 --met_end=2015 --resolution=CLM_USRDAT --compset=I1850CNPRDCTCBC

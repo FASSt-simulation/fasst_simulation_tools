@@ -1,0 +1,186 @@
+# COMPSETS
+https://www.cesm.ucar.edu/models/cesm2/config/2.0.0/compsets.html
+# elm compsets - master
+https://github.com/E3SM-Project/E3SM/blob/master/components/elm/cime_config/config_compsets.xml
+# elm 1.1.0
+https://github.com/E3SM-Project/E3SM/blob/v1.1.0/components/clm/cime_config/config_compsets.xml
+https://github.com/E3SM-Project/E3SM/blob/v1.1.0/components/clm/cime_config/testdefs/testlist_clm.xml
+
+
+# custom single point data
+https://escomp.github.io/ctsm-docs/versions/release-clm5.0/html/users_guide/running-single-points/running-single-point-configurations.html#creating-your-own-single-point-dataset
+
+# Running a  case
+https://escomp.github.io/ctsm-docs/versions/release-clm5.0/html/users_guide/setting-up-and-running-a-case/index.html
+
+# CLM5 history fields
+https://escomp.github.io/ctsm-docs/versions/release-clm5.0/html/users_guide/setting-up-and-running-a-case/master_list_file.html
+
+
+# build namelist options
+https://www.cesm.ucar.edu/models/cesm1.2/clm/models/lnd/clm/doc/UsersGuide/x1230.html
+https://escomp.github.io/ctsm-docs/versions/release-clm5.0/html/users_guide/setting-up-and-running-a-case/customizing-the-clm-configuration.html?highlight=clm_bldnml_opts
+https://escomp.github.io/ctsm-docs/versions/release-clm5.0/html/users_guide/running-special-cases/running-with-irrigation.html
+
+
+
+# e.g. Prelim simple run
+docker run -t -i --hostname=docker --user $(id -u):$(id -g) -v ~/scratch/ctsm_fates:/output \
+-v ~/Data/cesm_input_datasets:/inputdata -v ~/Data/GitHub/simulation_containers/scripts/hlm-fates/run_scripts:/scripts/ \
+fasstsimulation/ctsm-builds:ctsm-release-clm5.0.18 /scripts/ctsm_docker_1x1brazil.sh --compset=I1PtClm50SpGs \
+--start_year='2010-01-01' --num_years=5 --run_type=startup --met_start=2010 --met_end=2014 --output_vars=output_vars.txt \
+--output_freq=H --descname=1x1brazil --debug=FALSE
+
+docker run -t -i --hostname=docker --user $(id -u):$(id -g) --volume ~/Data/cesm_input_datasets:/inputdata \
+--volume ~/scratch/ctsm_fates:/output fasstsimulation/ctsm-builds:ctsm-release-clm5.0.18 \
+/bin/sh -c 'cd /output/1x1brazil.CLM50.docker.C24515c5-F33f9b4f.2022-03-28_13-58-45 && ./case.submit'
+
+
+# 1pt examples: CLM build-namelist - valid values for res (Horizontal resolutions
+Note: 0.1x0.1, 0.5x0.5, 5x5min, 10x10min, 3x3min and 0.33x0.33 are only used for CLM tools):
+      Values: default 512x1024 360x720cru 128x256 64x128 48x96 32x64 8x16 94x192  \
+              0.23x0.31 0.47x0.63 0.9x1.25 1.9x2.5 2.5x3.33 4x5 10x15 5x5_amazon 1x1_tropicAtl 1x1_camdenNJ  \
+              1x1_vancouverCAN 1x1_mexicocityMEX 1x1_asphaltjungleNJ 1x1_brazil 1x1_urbanc_alpha 1x1_numaIA  \
+              1x1_smallvilleIA 0.1x0.1 0.5x0.5 3x3min 5x5min 10x10min 0.33x0.33 ne4np4 ne16np4 ne30np4 ne60np4  \
+              ne120np4 ne240np4 wus12 us20
+      Default = 1.9x2.5
+     (NOTE: resolution and mask and other settings may influence what the default is)
+
+
+
+
+# quick and dirty US-NR1 example
+docker pull fasstsimulation/ctsm-builds:ctsm-release-clm5.0.18
+docker run -t -i --hostname=docker --user $(id -u):$(id -g) fasstsimulation/ctsm-builds:ctsm-release-clm5.0.18
+
+docker run -t -i --hostname=docker --user $(id -u):$(id -g) -v ~/Data/cesm_input_datasets:/inputdata \
+-v ~/scratch/ctsm_fates:/output -v ~/Data/GitHub/simulation_containers/scripts/hlm-fates/run_scripts:/scripts/ \
+fasstsimulation/ctsm-builds:ctsm-release-clm5.0.18 /scripts/create_case_1pt_example_USNR1.sh '1998-01-01' 2 output_vars.txt
+
+docker run -t -i --hostname=docker --user $(id -u):$(id -g) -v ~/Data/cesm_input_datasets:/inputdata \
+-v ~/scratch/ctsm_fates:/output fasstsimulation/ctsm-builds:ctsm-release-clm5.0.18 \
+/scripts/create_case_1pt_example_USNR1.sh '1998-01-01' 2 output_vars.txt
+
+
+docker run -t -i --hostname=docker --user $(id -u):$(id -g) -v ~/Data/cesm_input_datasets:/inputdata \
+-v ~/scratch/ctsm_fates:/output fasstsimulation/ctsm-builds:ctsm-release-clm5.0.18 \
+/bin/sh -c 'cd /output/CLM5_1648480288/ && ./case.submit'
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# OLD OSF
+
+osf -p kv93n fetch ckoven/a_file_not_on_github.txt
+
+# put files on OSF via python API
+.osfcli.config
+[osf]
+username = yourOSFaccount@example.com
+project = 9zpcy
+osf -p kv93n upload GSWP3_PA-SLZ_met_forcing_partial.tar.gz single_site_forcing/GSWP3_PA-SLZ_met_forcing_partial.tar.gz
+
+# then pull back down
+osf -p kv93n fetch single_site_forcing/GSWP3_PA-SLZ_met_forcing_partial.tar.gz
+
+# quick examples. put this into documentation
+docker run -t -i --hostname=docker --user $(id -u):$(id -g) -v ~/scratch/ctsm_fates:/output \
+-v /Users/sserbin/Data/cesm_input_datasets:/inputdata -v ~/Data/GitHub/docker-fates-tutorial/scripts:/scripts/ \
+ngeetropics/fates-ctsm-gcc650:latest /scripts/create_ctsm-fates_single-site_case.sh --site_name=PA-SLZ \
+--compset=I2000Clm50FatesGs --start_year='2000-01-01' --num_years=10 --run_type=startup --met_start=2000 \
+--met_end=2010 --resolution=0.9x1.25 --output_vars=output_vars.txt --output_freq=H --descname=siterun --debug=FALSE
+
+docker run -t -i --hostname=docker --user $(id -u):$(id -g) -v ~/scratch/ctsm_fates:/output \
+
+-v /Users/sserbin/Data/cesm_input_datasets:/inputdata ngeetropics/fates-ctsm-gcc650:latest \
+/bin/sh -c 'cd /output/PA-SLZ.siterun.fates.docker.I2000Clm50FatesGs.Cabcd593-F3248e63.2020-11-04_20-12-17 && ./case.submit'
+
+
+Current 1x1 Brazil test script: ctsm_fates_docker_1x1brazil.sh
+
+
+cd /Users/sserbin/Data/GitHub/docker-fates-tutorial/scripts
+
+# quick examples. put this into documentation
+docker run -t -i --hostname=docker --user $(id -u):$(id -g) -v ~/scratch/ctsm_fates:/output \
+-v /Volumes/data/Model_Data/cesm_input_datasets:/inputdata -v ~/Data/GitHub/docker-fates-tutorial/scripts:/scripts/ \
+ngeetropics/fates-ctsm-gcc650:latest /scripts/ctsm_fates_docker_1x1brazil.sh --compset=I2000Clm50FatesGs \
+--start_year='2010-01-01' --num_years=5 --run_type=startup --met_start=2010 --met_end=2014 --output_vars=output_vars.txt \
+--output_freq=H --descname=1x1brazil --debug=FALSE
+
+
+docker run -t -i --hostname=docker --user $(id -u):$(id -g) -v ~/scratch/ctsm_fates:/output \
+-v /Volumes/data/Model_Data/cesm_input_datasets:/inputdata -v ~/Data/GitHub/docker-fates-tutorial/scripts:/scripts/ \
+ngeetropics/fates-ctsm-gcc650:latest /scripts/ctsm_fates_docker_1x1brazil.sh --compset=I2000Clm50FatesGs \
+--start_year='2010-01-01' --num_years=5 --run_type=startup --met_start=2010 --met_end=2014 --output_vars=output_vars.txt \
+--output_freq=M --descname=1x1brazil --debug=FALSE
+
+
+docker run -t -i --hostname=docker --user $(id -u):$(id -g) -v ~/scratch/ctsm_fates:/output \
+-v /Volumes/data/Model_Data/cesm_input_datasets:/inputdata -v ~/Data/GitHub/docker-fates-tutorial/scripts:/scripts/ \
+ngeetropics/fates-ctsm-gcc650:latest /scripts/ctsm_fates_docker_1x1brazil.sh --compset=I2000Clm50FatesCruGs \
+--start_year='2010-01-01' --num_years=5 --run_type=startup --met_start=2010 --met_end=2014 --output_vars=output_vars.txt \
+--output_freq=M --descname=1x1brazil --debug=FALSE
+
+
+docker run -t -i --hostname=docker --user $(id -u):$(id -g) -v ~/scratch/ctsm_fates:/output \
+
+-v /Volumes/data/Model_Data/cesm_input_datasets:/inputdata ngeetropics/fates-ctsm-gcc650:latest \
+/bin/sh -c 'cd /output/1x1brazil.fates.docker.Cabcd593-F3248e63.2020-10-30_13-51-33 && ./preview_namelists’
+
+docker run -t -i --hostname=docker --user $(id -u):$(id -g) -v ~/scratch/ctsm_fates:/output \
+-v /Volumes/data/Model_Data/cesm_input_datasets:/inputdata ngeetropics/fates-ctsm-gcc650:latest \
+/bin/sh -c 'cd /output/1x1brazil.fates.docker.Cabcd593-F3248e63.2020-10-30_13-51-33 && ./case.submit’
+
+
+
+Building cesm with output to /output/PA-SLZ.siterun.fates.docker.I2000Clm50FatesGs.Cabcd593-F3248e63.2020-11-04_20-12-17/bld/cesm.bldlog.201104-201246
+Time spent not building: 2.209011 sec
+Time spent building: 386.824052 sec
+MODEL BUILD HAS FINISHED SUCCESSFULLY
+*** Finished building new case in CASE: /output/PA-SLZ.siterun.fates.docker.I2000Clm50FatesGs.Cabcd593-F3248e63.2020-11-04_20-12-17 ***
+
+
+
+*****************************************************************************************************
+If you built this case interactively then:
+To submit the case change directory to /output/PA-SLZ.siterun.fates.docker.I2000Clm50FatesGs.Cabcd593-F3248e63.2020-11-04_20-12-17 and run ./case.submit
+
+
+If you built this case non-interactively then change your Docker run command to:
+
+docker run -t -i --hostname=docker --user $(id -u):$(id -g) --volume /path/to/host/inputs:/inputdata \
+--volume /path/to/host/outputs:/output docker_image_tag /bin/sh -c 'cd /output/PA-SLZ.siterun.fates.docker.I2000Clm50FatesGs.Cabcd593-F3248e63.2020-11-04_20-12-17 && ./case.submit'
+
+Where:
+/path/to/host/inputs is your host input path, such as /Volumes/data/Model_Data/cesm_input_datasets
+/path/to/host/outputs is your host output path, such as ~/scratch/ctsm_fates
+/path/to/host/outputs is the docker image tag on your host machine, e.g. ngeetropics/fates-ctsm-gcc650:latest
+
+Alternatively, you can use environmental variables to define the constants, e.g.:
+export input_data=/Volumes/data/Model_Data/cesm_input_datasets
+export output_dir=~/scratch/ctsm_fates
+export docker_tag=ngeetropics/fates-ctsm-gcc650:latest
+
+And run the case using:
+docker run -t -i --hostname=docker --user $(id -u):$(id -g) --volume ${input_data}:/inputdata \
+--volume ${output_dir}:/output ${docker_tag} /bin/sh -c 'cd /output/PA-SLZ.siterun.fates.docker.I2000Clm50FatesGs.Cabcd593-F3248e63.2020-11-04_20-12-17 && ./case.submit'
+*****************************************************************************************************
+
+
+
+
