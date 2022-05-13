@@ -311,15 +311,19 @@ fi # end if/else
 echo "*** Running case.setup ***"
 echo " "
 ./case.setup
+echo " "
 
 #./cesm_setup
 echo "*** Running case.setup ***"
 echo " "
 ./case.setup
+echo " "
 
 # set build complete to re-use already compiled model
 ./xmlchange BUILD_COMPLETE=TRUE
 
+echo " "
+echo " "
 echo "*** Finished building new case in CASE: ${CASE_NAME} ***"
 echo " "
 echo " "
