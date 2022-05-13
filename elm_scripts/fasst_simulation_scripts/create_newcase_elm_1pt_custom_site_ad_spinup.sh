@@ -46,10 +46,6 @@ case $i in
     output_vars="${i#*=}"
     shift # past argument=value
     ;;
-    -of=*|--output_freq=*)
-    output_freq="${i#*=}"
-    shift
-    ;;
     -rt=*|--run_type=*)
     run_type="${i#*=}"
     shift # past argument=value
@@ -92,8 +88,6 @@ output_vars="${output_vars:-/scripts/output_vars.txt}"
 run_type="${run_type:-startup}"
 stop_option="${stop_option:-nyears}"
 # add rest options here too
-met_start="${met_start:-1985}"
-met_end="${met_end:-2015}"
 domain_lnd="${domain_lnd:-domain.lnd.fv0.9x1.25_gx1v6.090309}"
 surfdata_map="${surfdata_map:-surfdata_0.9x1.25_simyr2000_c180404}"
 compset="${compset:-I1850GSWELMBGC}"
@@ -101,7 +95,7 @@ compset="${compset:-I1850GSWELMBGC}"
 #ICB1850CNPRDCTCBC
 #I1850GSWELMBGC
 #I20TRCRUELMBGC
-output_freq="${output_freq:-M}" # M monthly or H hourly
+#output_freq="${output_freq:-M}" # M monthly or H hourly
 debug="${debug:-FALSE}"
 rmachine="${rmachine:-docker}"
 #descname="${descname:-siterun}"
@@ -130,21 +124,16 @@ echo "Model compset  = ${compset}"
 echo "Model simulation start year  = ${start_year}"
 echo "Number of simulation years  = ${num_years}"
 echo "Run type = ${run_type}"
-echo "DATM_CLMNCEP_YR_START: "${met_start}
-echo "DATM_CLMNCEP_YR_END: "${met_end}
 echo "Selected output variables: "${out_vars}
-echo "Selected output frequency: "${output_freq}
 echo " "
 # =======================================================================================
 
 # =======================================================================================
 # Create a new case
 export MODEL_SOURCE=${model_source}
-#export date_var=$(date +%s)
 export CASEROOT=${case_root}
 export SITE_NAME=${site_name}
 export MODEL_VERSION=ELM
-#export RESOLUTION=${resolution}
 export COMPSET=${compset}
 export CASE_NAME=${CASEROOT}/${SITE_NAME}_${MODEL_VERSION}_${COMPSET}_"ad_spinup"
 export RUN_MACHINE=${rmachine}
@@ -197,6 +186,7 @@ echo "*** Modifying xmls  ***"
 echo "RUN_TYPE=${run_type}"
 
 # run options
+./xmlchange ELM_USRDAT_NAME=${site_name}
 ./xmlchange RUN_TYPE=${run_type}
 ./xmlchange DEBUG=${debug}
 ./xmlchange INFO_DBUG=0
@@ -210,18 +200,16 @@ echo "RUN_TYPE=${run_type}"
 ./xmlchange RESUBMIT=0 # this should be a user selectable option
 
 # build options - may want to set some of these up, but would depend on the COMPSET being used
-#./xmlchange --id CLM_BLDNML_OPTS --val '-bgc bgc -nutrient cn -nutrient_comp_pathway rd  -soil_decomp ctc -methane -nitrif_denitrif'
+./xmlchange --id ELM_BLDNML_OPTS --val '-bgc bgc -nutrient cn -nutrient_comp_pathway rd  -soil_decomp ctc -methane'
 ./xmlchange EXEROOT=${CASE_NAME}/bld  # where to put the compiled exe file
-
-# met options
-./xmlchange DATM_CLMNCEP_YR_START=${met_start}
-./xmlchange DATM_CLMNCEP_YR_END=${met_end}
-./xmlchange DIN_LOC_ROOT_CLMFORC=${datmdata_dir}
-./xmlchange DIN_LOC_ROOT=${INPUTDIR}
 
 # startup options, spinup options
 ./xmlchange ELM_FORCE_COLDSTART=off
 ./xmlchange ELM_ACCELERATED_SPINUP=on
+
+# met options
+./xmlchange DIN_LOC_ROOT_CLMFORC=${datmdata_dir}
+./xmlchange DIN_LOC_ROOT=${INPUTDIR}
 
 # domain options
 #./xmlchange -a ELM_CONFIG_OPTS='-nofire'
@@ -229,10 +217,14 @@ echo "RUN_TYPE=${run_type}"
 ./xmlchange LND_DOMAIN_FILE=${ELM_USRDAT_DOMAIN}
 ./xmlchange ATM_DOMAIN_PATH=${datm_data_root}
 ./xmlchange LND_DOMAIN_PATH=${datm_data_root}
-./xmlchange ELM_USRDAT_NAME=${site_name}
 ./xmlchange MOSART_MODE=NULL
 
 # output options
+./xmlchange DOUT_S_SAVE_INTERIM_RESTART_FILES=TRUE
+./xmlchange DOUT_S=TRUE
+./xmlchange DOUT_S_ROOT=${CASE_NAME}/history
+./xmlchange RUNDIR=${CASE_NAME}/run
+
 ./xmlchange DOUT_S_SAVE_INTERIM_RESTART_FILES=TRUE
 ./xmlchange DOUT_S=TRUE
 ./xmlchange DOUT_S_ROOT=${CASE_NAME}/history
@@ -274,14 +266,9 @@ echo " "
 echo "ELM Surface File Path: ${ELM_SURFDAT_file}"
 echo "*** Configure user_nl_elm for AD spinup ***"
 cat >> user_nl_elm <<EOF
+!paramfile =/path/to/custom/paramfile.nc
 finidat = ''
 fsurdat = '${ELM_SURFDAT_file}'
-hist_mfilt = 1, 1
-hist_nhtfrq = -175200, -175200
-hist_dov2xy = .true., .false.
-!hist_fincl2 = 'CWDC_vr','CWDN_vr','CWDP_vr','SOIL2C_vr','SOIL2N_vr','SOIL2P_vr','SOIL3C_vr','SOIL3N_vr',\
-!'SOIL3P_vr','DEADSTEMC','DEADSTEMN','DEADSTEMP','DEADCROOTC','DEADCROOTN','DEADCROOTP','LITR3C_vr',\
-!'LITR3N_vr','LITR3P_vr','LEAFC','TOTVEGC','TLAI','SOIL4C_vr','SOIL4N_vr','SOIL4P_vr'
 nyears_ad_carbon_only   = 25
 spinup_mortality_factor = 10
 !co2_file = '/inputdata/atm/datm7/CO2/fco2_datm_rcp4.5_1765-2500_c130312.nc'
@@ -289,7 +276,16 @@ spinup_mortality_factor = 10
 !stream_fldfilename_ndep = '/inputdata/lnd/clm2/ndepdata/fndep_clm_rcp4.5_simyr1849-2106_1.9x2.5_c100428.nc'
 ! Include this line to use variable soil depths:
 !use_var_soil_thick = .TRUE.
+
+! History file controls
+hist_mfilt = 1, 1
+hist_nhtfrq = -175200, -175200
 EOF
+#!hist_fincl1       = ${out_vars}
+#!hist_dov2xy = .true., .false.
+#!hist_fincl2 = 'CWDC_vr','CWDN_vr','CWDP_vr','SOIL2C_vr','SOIL2N_vr','SOIL2P_vr','SOIL3C_vr','SOIL3N_vr',\
+#!'SOIL3P_vr','DEADSTEMC','DEADSTEMN','DEADSTEMP','DEADCROOTC','DEADCROOTN','DEADCROOTP','LITR3C_vr',\
+#!'LITR3N_vr','LITR3P_vr','LEAFC','TOTVEGC','TLAI','SOIL4C_vr','SOIL4N_vr','SOIL4P_vr'
 
 ## Configure met params
 echo " "

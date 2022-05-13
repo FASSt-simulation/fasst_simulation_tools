@@ -1,0 +1,27 @@
+
+module load singularity
+
+#export container=containers/elm-builds:release-v1.2.0_ngeearctic-latest.sif
+export container=containers/elm-builds:release-v2.0.0-latest.sif
+export host_input_data=/data/Model_Data/cesm_input_datasets
+export scripts=/data/sserbin/Modeling/FASSt-simulation/fasst_simulation_tools/elm_scripts/fasst_simulation_scripts
+export host_output_dir=/data2/Model_Output/elm_runs/single_point
+
+singularity exec -B $host_input_data:/inputdata \
+-B $scripts:/scripts -B $host_output_dir:/output \
+$container /scripts/./create_newcase_elm_1pt_custom_site_ad_spinup.sh \
+--case_root=/output --site_name=US-xTA --start_year='0001-01-01' \
+--num_years=200 --compset=I1850GSWELMBGC --rmachine=modex
+
+
+export container=containers/elm-builds:release-v2.0.0-latest.sif
+export host_input_data=/data/Model_Data/cesm_input_datasets
+export scripts=/data/sserbin/Modeling/FASSt-simulation/fasst_simulation_tools/elm_scripts/fasst_simulation_scripts
+export host_output_dir=/data2/Model_Output/elm_runs/single_point
+
+sbatch submit_job.sh US-xTA_ELM_I1850GSWELMBGC_ad_spinup
+
+
+
+
+I1850GSWELMBGC
