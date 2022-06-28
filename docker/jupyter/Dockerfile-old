@@ -1,0 +1,64 @@
+# ----------------------------------------------------------------------
+# JupyterLab Notebook for analyzing E3SM-ELM land model output
+# ----------------------------------------------------------------------
+
+#FROM jupyter/scipy-notebook:latest
+FROM jupyter/datascience-notebook:latest
+LABEL maintainer.name="Shawn P. Serbin" \
+      maintainer.email="sserbin@bnl.gov" \
+      author.name="Shawn P. Serbin" \
+      author.email="sserbin@bnl.gov" \
+      description="Jupyter-SciPy Container"
+
+#USER root
+#ENV USER=modeluser
+#RUN export USER=${NB_USER}
+#RUN groupadd -r dockerusers \
+#    && useradd -ms /bin/bash $NB_USER -u 1001 -g dockerusers \
+#    && chown $NB_USER:dockerusers /home/$NB_USER
+#RUN echo $NB_USER
+#ENV USER=${NB_USER}
+#USER ${NB_USER}
+
+#RUN fix-permissions "${CONDA_DIR}" \
+#    && fix-permissions "/home/${NB_USER}"
+
+# install Python packages you often use
+RUN set -ex \
+   && conda install --quiet --yes \
+   # choose the Python packages you need
+   'plotly' \
+   'folium' \
+   'dask' \
+   'pandas' \
+   'geopandas' \
+   && conda install --quiet --yes -c conda-forge 'netCDF4' \
+   && conda clean --all -f -y \
+   && mamba install --quiet --yes 'geemap' 'localtileserver' -c conda-forge \
+   && mamba clean --all -f -y \
+   # install Jupyter Lab extensions you need
+   && jupyter labextension install jupyterlab-plotly --no-build \
+   && jupyter lab build -y \
+   && jupyter lab clean -y \
+   && rm -rf "/home/${NB_USER}/.cache/yarn" \
+   && rm -rf "/home/${NB_USER}/.node-gyp" \
+   && fix-permissions "${CONDA_DIR}" \
+   && fix-permissions "/home/${NB_USER}"
+
+USER root
+RUN cd / \
+    && mkdir -p inputdata \
+    && mkdir -p output \
+    && mkdir -p scripts \
+    && mkdir -p tools \
+    && chown $NB_USER inputdata \
+    && chown $NB_USER output \
+    && chown $NB_USER scripts \
+    && chown $NB_USER tools
+
+USER ${NB_USER}
+RUN fix-permissions "${CONDA_DIR}" \
+    && fix-permissions "/home/${NB_USER}
+WORKDIR "${HOME}"
+
+## END

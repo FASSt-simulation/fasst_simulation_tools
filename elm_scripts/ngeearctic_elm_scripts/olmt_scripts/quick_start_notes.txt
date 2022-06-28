@@ -1,0 +1,17 @@
+# Step 1
+docker pull fasstsimulation/elm-builds:elm_v2-for-ngee
+
+# Step 2 - Create docker volume named "elmdata"
+
+# Step 3 - Create docker volume named "elmoutput"
+
+# Step 4 - Download the met forcing datasets
+docker run -t -i --hostname=docker --user modeluser -v elmdata:/inputdata fasstsimulation/elm-builds:elm_v2-for-ngee /scripts/download_elm_singlesite_forcing_data.sh
+
+# Step 5
+#docker run -t -i --hostname=docker --user modeluser -v elmdata:/inputdata -v elmoutput:/output fasstsimulation/elm-builds:elm_v2-for-ngee /bin/sh -c 'cd /scripts/ && bash OLMT_docker_example.sh'
+docker run -t -i --hostname=docker --user modeluser -v elmdata:/inputdata -v elmoutput:/output fasstsimulation/elm-builds:elm_v2-for-ngee /scripts/OLMT_docker_example.sh
+
+# Step 6 Start Jupyter-Lab
+
+# Step 7

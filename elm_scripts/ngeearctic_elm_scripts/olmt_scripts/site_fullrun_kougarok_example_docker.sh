@@ -3,8 +3,9 @@
 # First download met fording data. should add a user selectable flag here to skip
 echo "***** Starting download of met forcing data *****"
 sleep 1
-cd /scripts/
-./download_elm_singlesite_forcing_data.sh
+cd /scripts
+cwd=$(pwd)
+sh download_elm_singlesite_forcing_data.sh
 sleep 5
 
 cd /

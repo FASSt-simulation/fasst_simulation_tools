@@ -1,0 +1,9 @@
+# Step 1
+docker pull fasstsimulation/elm-builds:elm_v2-for-ngee
+
+# Step 2 - Create docker volume named "elmdata"
+
+# Step 3 - Create docker volume named "elmoutput"
+
+
+output_file='/home/jovyan/output/cime_run_dirs/OLMT_AK-K64G_ICB1850CNRDCTCBC_ad_spinup/run/OLMT_AK-K64G_ICB1850CNRDCTCBC_ad_spinup.elm.h0.0201-01-01-00000.nc'
