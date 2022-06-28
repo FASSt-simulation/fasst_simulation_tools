@@ -17,6 +17,8 @@ LABEL maintainer.name="Shawn P. Serbin" \
       author.email="sserbin@bnl.gov" \
       description="Jupyter-SciPy Container"
 
+ENV TOOLS_REPOSITORY_RAW_URL=https://raw.githubusercontent.com/FASSt-simulation/fasst_simulation_tools
+
 # install Python packages you often use
 RUN set -ex \
    && conda install --quiet --yes \
@@ -30,7 +32,7 @@ RUN set -ex \
    'geopandas' \
    && conda install --quiet --yes -c conda-forge 'nc-time-axis' \
    && conda install --quiet --yes -c conda-forge 'netCDF4' \
-   && conda install --quiet --yes -c conda-forge earthengine-api \
+   && conda install --quiet --yes -c conda-forge 'earthengine-api' \
    && conda clean --all -f -y \
    && mamba install --quiet --yes 'geemap' 'localtileserver' -c conda-forge \
    && mamba clean --all -f -y \
@@ -62,7 +64,10 @@ RUN mkdir "/home/${NB_USER}/scripts" \
 #   && fix-permissions "/output"
 
 # Copy in example plotting scripts for use with model output
-
+#https://raw.githubusercontent.com/FASSt-simulation/fasst_simulation_tools/main/elm_scripts/plotting/plot_KG64_ELM_output.py
+RUN cd "/home/${NB_USER}/scripts" \
+   && wget $TOOLS_REPOSITORY_RAW_URL/main/elm_scripts/plotting/plot_KG64_ELM_output.py \
+   && chmod 775 plot_KG64_ELM_output.py
 
 # Setup default user, when enter docker container
 #USER ${UID}:${GID}

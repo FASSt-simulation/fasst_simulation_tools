@@ -7,3 +7,5 @@ docker pull fasstsimulation/elm-builds:elm_v2-for-ngee
 
 
 output_file='/home/jovyan/output/cime_run_dirs/OLMT_AK-K64G_ICB1850CNRDCTCBC_ad_spinup/run/OLMT_AK-K64G_ICB1850CNRDCTCBC_ad_spinup.elm.h0.0201-01-01-00000.nc'
+
+docker run -p 8888:8888 -v elmoutput:/home/jovyan/output -v /Users/sserbin/Data/GitHub/fasst_simulation_tools/elm_scripts/plotting:/home/jovyan/scripts docker-jupyterlab:latest
