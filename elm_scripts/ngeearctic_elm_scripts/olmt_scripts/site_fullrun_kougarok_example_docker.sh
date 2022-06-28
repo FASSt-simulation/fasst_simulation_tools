@@ -4,7 +4,7 @@
 echo "***** Starting download of met forcing data *****"
 sleep 1
 cd /scripts/
-sh download_elm_singlesite_forcing_data.sh
+./download_elm_singlesite_forcing_data.sh
 sleep 5
 
 cd /
