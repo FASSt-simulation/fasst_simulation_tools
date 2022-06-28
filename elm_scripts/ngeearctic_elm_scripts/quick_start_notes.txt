@@ -6,7 +6,18 @@ docker pull fasstsimulation/elm-builds:elm_v2-for-ngee
 # Step 3
 docker run -t -i --hostname=docker --user modeluser -v elmdata:/inputdata fasstsimulation/elm-builds:elm_v2-for-ngee /scripts/download_elm_singlesite_forcing_data.sh
 
-docker run -t -i --hostname=docker --user modeluser -v ~/sserbin/scratch/elmdata:/inputdata entrypt_test:latest download_forcing
+#docker run -t -i --hostname=docker --user modeluser -v ~/sserbin/scratch/elmdata:/inputdata entrypt_test:latest download_forcing
 
 # Step 4
 docker run -t -i --hostname=docker --user modeluser -v elmdata:/inputdata -v elmoutput:/output fasstsimulation/elm-builds:elm_v2-for-ngee /bin/sh -c 'cd /scripts/ && bash OLMT_docker_example.sh'
+
+
+# using Docker entrypoint
+
+# Step 1
+docker pull fasstsimulation/elm-builds:elm_v2-for-ngee
+
+# Step 2 - Create docker volume named "elmdata"
+
+# Step 3 - run the whole thing
+docker run -t -i --hostname=docker --user modeluser -v elmdata:/inputdata -v elmoutput:/output entrypt_test:latest run_elm
