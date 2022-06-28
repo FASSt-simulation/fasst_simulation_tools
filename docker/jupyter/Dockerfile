@@ -4,8 +4,12 @@
 
 #FROM jupyter/scipy-notebook:latest
 #FROM jupyter/datascience-notebook:latest
+#https://jupyter-docker-stacks.readthedocs.io/en/latest/
+#https://github.com/jupyter/docker-stacks/blob/master/base-notebook/Dockerfile
 #https://jupyter-docker-stacks.readthedocs.io/en/latest/using/selecting.html#jupyter-scipy-notebook
 # MORE INFO: https://jupyter-docker-stacks.readthedocs.io/en/latest/using/common.html
+# https://developers.refinitiv.com/en/article-catalog/article/how-to-set-up-and-run-data-science-development-environment-with-
+#https://towardsdatascience.com/how-to-run-jupyter-notebook-on-docker-7c9748ed209f
 FROM jupyter/scipy-notebook:lab-3.3.2
 LABEL maintainer.name="Shawn P. Serbin" \
       maintainer.email="sserbin@bnl.gov" \
@@ -24,6 +28,7 @@ RUN set -ex \
    'pandas' \
    'xarray' \
    'geopandas' \
+   && conda install --quiet --yes -c conda-forge 'nc-time-axis' \
    && conda install --quiet --yes -c conda-forge 'netCDF4' \
    && conda install --quiet --yes -c conda-forge earthengine-api \
    && conda clean --all -f -y \

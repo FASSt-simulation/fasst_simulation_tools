@@ -1,5 +1,6 @@
 #!/bin/sh -f
 
+### Setup and run an ELM OLMT simulation for the Kougarok Mile 64 Site
 cwd=$(pwd)
 
 cd /tools/OLMT
@@ -31,21 +32,20 @@ else
 fi
 
 cd ${cwd}
+sleep 2
 
+#### Postprocess
+### Collapse transient simulation output into a single netCDF file
+echo " "
+echo " "
+echo " "
+cd /output/cime_run_dirs/OLMT_AK-K64G_ICB20TRCNPRDCTCBC/run
+echo "**** Concatenating netCDF output - Hang tight this can take awhile ****"
+ncrcat *.h0.*.nc ELM_output.nc
+chmod 777 ELM_output.nc
+echo "**** Concatenating netCDF output: DONE ****"
+sleep 1
 
-
-
-# for grid-cell gswp3 v2 (1901-2014)
-#      --cpl_bypass --gswp3 \
-
-# for daymet corrected gswp3 v1 ( 1980 - 2010, CONUS only)
-#      --cpl_bypass --gswp3 --daymet \
-
-# for daymet4 corrected gswp3 v2 ( 1980 - 2014, Northern America only, 1km resolution, unstructured-grid)
-#      --cpl_bypass --gswp3 --daymet4 \
-
-# user-provided cpl_bypass data
-#      --metdir /Users/f9y/mygithub/pt-e3sm-inputdata/atm/datm7/atm_forcing.datm7.GSWP3_daymet.1x1pt_kougarok-NGEE/cpl_bypass_full \
-
-# If for ELM after June-2021, turning off 'do_budgets'
-#     --no_dobudgets \
+#echo "**** Create quicklook plots of ELM output ****"
+#cd /output
+#python3 /scripts/plot_ELM_output.py
