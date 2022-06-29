@@ -1,4 +1,4 @@
-#!/bin/sh -f
+#!/bin/sh
 
 # First download met fording data. should add a user selectable flag here to skip
 echo "***** Starting download of met forcing data *****"

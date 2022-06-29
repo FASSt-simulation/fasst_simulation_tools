@@ -1,4 +1,4 @@
-#!/bin/sh -f
+#!/bin/sh
 
 ### Setup and run an ELM OLMT simulation for the Kougarok Mile 64 Site
 cwd=$(pwd)
