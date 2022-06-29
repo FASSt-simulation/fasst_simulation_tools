@@ -40,8 +40,19 @@ else
 fi
 
 cd ${cwd}
+sleep 2
 
-
+#### Postprocess
+### Collapse transient simulation output into a single netCDF file
+echo " "
+echo " "
+echo " "
+cd /output/cime_run_dirs/OLMT_AK-K64G_ICB20TRCNPRDCTCBC/run
+echo "**** Concatenating netCDF output - Hang tight this can take awhile ****"
+ncrcat --ovr *.h0.*.nc ELM_output.nc
+chmod 777 ELM_output.nc
+echo "**** Concatenating netCDF output: DONE ****"
+sleep 1
 
 
 # for grid-cell gswp3 v2 (1901-2014)

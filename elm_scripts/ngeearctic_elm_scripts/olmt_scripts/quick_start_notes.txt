@@ -17,4 +17,7 @@ docker run -p 8888:8888 -v elmoutput:/home/jovyan/output docker-jupyterlab:lates
 
 docker run -p 8888:8888 -v elmoutput:/home/jovyan/output -v /Users/sserbin/Data/GitHub/fasst_simulation_tools/elm_scripts/plotting:/home/jovyan/scripts docker-jupyterlab:latest
 
+docker run -p 8888:8888 -v elmoutput:/home/jovyan/output fasstsimulation/fasst_simulation_tools:fasst_jupyterlab
+
+
 # Step 7
