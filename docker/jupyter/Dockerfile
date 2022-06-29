@@ -69,6 +69,14 @@ RUN cd "/home/${NB_USER}/scripts" \
    && wget $TOOLS_REPOSITORY_RAW_URL/main/elm_scripts/plotting/plot_KG64_ELM_output.py \
    && chmod 775 plot_KG64_ELM_output.py
 
+# add Ben Sulman's matplotlib plotting ascetics defaults
+RUN cd "/home/${NB_USER}" \
+   && mkdir -p "/home/${NB_USER}/.config/matplotlib" \
+   && cd "/home/${NB_USER}/.config/matplotlib" \
+   && wget $TOOLS_REPOSITORY_RAW_URL/main/elm_scripts/plotting/matplotlibrc \
+   && cd "/home/${NB_USER}" \
+   && fix-permissions "/home/${NB_USER}"
+
 # Setup default user, when enter docker container
 #USER ${UID}:${GID}
 #WORKDIR /home/${USER}
