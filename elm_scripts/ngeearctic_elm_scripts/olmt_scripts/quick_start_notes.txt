@@ -12,12 +12,40 @@ docker run -t -i --hostname=docker --user modeluser -v elmdata:/inputdata fassts
 #docker run -t -i --hostname=docker --user modeluser -v elmdata:/inputdata -v elmoutput:/output fasstsimulation/elm-builds:elm_v2-for-ngee /bin/sh -c 'cd /scripts/ && bash OLMT_docker_example.sh'
 docker run -t -i --hostname=docker --user modeluser -v elmdata:/inputdata -v elmoutput:/output fasstsimulation/elm-builds:elm_v2-for-ngee /scripts/OLMT_docker_example.sh
 
+# Step 5b - use host output directory, example
+docker run -t -i --hostname=docker --user modeluser -v elmdata:/inputdata -v /Users/sserbin/scratch/elm_testruns:/output fasstsimulation/elm-builds:elm_v2-for-ngee /scripts/OLMT_docker_example.sh
+
+# Step 6 Start Jupyter-Lab environment to interact with the simulation outputs
+
+
+
+
+
+
+
+
 # Step 6 Start Jupyter-Lab
 docker run -p 8888:8888 -v elmoutput:/home/jovyan/output docker-jupyterlab:latest
 
 docker run -p 8888:8888 -v elmoutput:/home/jovyan/output -v /Users/sserbin/Data/GitHub/fasst_simulation_tools/elm_scripts/plotting:/home/jovyan/scripts docker-jupyterlab:latest
 
 docker run -p 8888:8888 -v elmoutput:/home/jovyan/output fasstsimulation/fasst_simulation_tools:fasst_jupyterlab
+
+
+docker run -it --rm \
+    -p 8888:8888 \
+    -v elmoutput:/home/jovyan/output \
+    --user root \
+    -e NB_USER="modeluser" \
+    -e CHOWN_HOME=yes \
+    -w "/home/${NB_USER}" \
+    fasstsimulation/fasst_simulation_tools:fasst_jupyterlab
+
+docker run -it --rm \
+    -p 8888:8888 \
+    -v elmoutput:/home/jovyan/output \
+    --user root \
+    fasstsimulation/fasst_simulation_tools:fasst_jupyterlab
 
 
 # Step 7
