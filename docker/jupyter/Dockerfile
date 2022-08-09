@@ -31,6 +31,7 @@ RUN set -ex \
    'xarray' \
    'geopandas' \
    && conda install --quiet --yes -c conda-forge 'nc-time-axis' \
+   && conda install --quiet --yes -c conda-forge 'cf_units' \
    && conda install --quiet --yes -c conda-forge 'netCDF4' \
    && conda install --quiet --yes -c conda-forge 'earthengine-api' \
    && conda clean --all -f -y \
