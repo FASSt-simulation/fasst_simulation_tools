@@ -135,8 +135,7 @@ if python3 ./site_fullrun.py \
       --metdir /inputdata/atm/datm7/atm_forcing.datm7.GSWP3.0.5d.v2.c180716_NGEE-Grid/cpl_bypass_${site_name}-Grid \
       --domainfile /inputdata/share/domains/domain.clm/domain.lnd.1x1pt_${site_name}-GRID_navy.nc \
       --surffile /inputdata/lnd/clm2/surfdata_map/surfdata_1x1pt_${site_name}-GRID_simyr1850_c360x720_c171002.nc \
-      --landusefile /inputdata/lnd/clm2/surfdata_map/landuse.timeseries_1x1pt_${site_name}-GRID_simyr1850-2015_c180423.nc \
-      & sleep 10
+      --landusefile /inputdata/lnd/clm2/surfdata_map/landuse.timeseries_1x1pt_${site_name}-GRID_simyr1850-2015_c180423.nc
 
 then
   wait
@@ -150,14 +149,11 @@ fi
 cd ${cwd}
 sleep 2
 
-#### Postprocess !!!! TODO !!!
+#### Postprocess
 ### Collapse transient simulation output into a single netCDF file
 echo " "
 echo " "
 echo " "
-# add loop here to loop over all output dirs and create the single ELM_output.nc file per ensemble
-# create loop that has X elements based on the number of MC ensembles 
-# folder names are predictable, e.g. g0001 g0002 g0003...g000x
 echo "**** Postprocessing ELM output in:"
 echo "/output/cime_run_dirs/UQ/${case_prefix}_${site_code}_ICB20TRCNPRDCTCBC/"
 echo " "
@@ -165,16 +161,10 @@ echo " "
 cd /output/cime_run_dirs/UQ/${case_prefix}_${site_code}_ICB20TRCNPRDCTCBC/
 echo " "
 echo "**** Concatenating netCDF output - Hang tight this will take awhile ****"
-#for i in $(seq 1 1 ${num_ens})
-#do
-#  echo "Iter: $i"
-#done
-# Loop over the output directories
 echo ${PWD}
 for d in */ ; do
     echo "Post-processing: $d"
-    #cd /output/cime_run_dirs/UQ/${case_prefix}_${site_code}_ICB20TRCNPRDCTCBC/${d}
-    cd /Users/sserbin/scratch/elm_testruns/cime_run_dirs/UQ/OLMT_ens_AK-K64G_ICB20TRCNPRDCTCBC/${d}
+    cd /output/cime_run_dirs/UQ/${case_prefix}_${site_code}_ICB20TRCNPRDCTCBC/${d}
     ncrcat --ovr *.h0.*.nc ELM_output.nc
     chmod 777 ELM_output.nc
     echo " "
