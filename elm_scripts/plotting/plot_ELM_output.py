@@ -7,8 +7,18 @@ import os
 # cftime (allows xarray to properly convert the noleap calendar that ELM uses)
 
 # This needs to be set to the actual output data file from the Docker run.
-# This assumes the files have already been combined with `ncrcat *.h0.*.nc ELM_output.nc` and moved to somewhere accessible from this script
-output_file='/Users/b0u/Documents/Models/Docker/ELM_output.nc'
+# This assumes the files have already been combined with `ncrcat *.h0.*.nc ELM_output.nc` 
+# and moved to somewhere accessible from this script
+# 
+# To run, replace the empty path below with one of the options, depending on which site output
+# (e.g. BEO, Council, Kougarok, or Teller) you would like to plot
+output_file=''
+
+# Output locations using provided NGEE-Arctic demos:
+#'/home/jovyan/output/cime_run_dirs/OLMT_AK-BEOG_ICB20TRCNPRDCTCBC/run/ELM_output.nc'
+#'/home/jovyan/output/cime_run_dirs/OLMT_AK-CLG_ICB20TRCNPRDCTCBC/run/ELM_output.nc'
+#'/home/jovyan/output/cime_run_dirs/OLMT_AK-K64G_ICB20TRCNPRDCTCBC/run/ELM_output.nc'
+#'/home/jovyan/output/cime_run_dirs/OLMT_AK-TLG_ICB20TRCNPRDCTCBC/run/ELM_output.nc'
 
 # Load model output data into xarray format. squeeze removes an empty grid cell dimension assuming this is a single point run
 output=xarray.open_dataset(output_file).squeeze()
