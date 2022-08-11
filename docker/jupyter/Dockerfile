@@ -56,18 +56,13 @@ RUN mkdir "/home/${NB_USER}/scripts" \
    && fix-permissions "/home/${NB_USER}/output" \
    && fix-permissions "/home/${NB_USER}"
 
-#RUN mkdir "/scripts" \
-#   && mkdir "/inputdata" \
-#   &&  mkdir "/output" \
-#   && fix-permissions "/scripts" \
-#   && fix-permissions "/inputdata" \
-#   && fix-permissions "/output"
-
 # Copy in example plotting scripts for use with model output
 #https://raw.githubusercontent.com/FASSt-simulation/fasst_simulation_tools/main/elm_scripts/plotting/plot_KG64_ELM_output.py
 RUN cd "/home/${NB_USER}/scripts" \
    && wget $TOOLS_REPOSITORY_RAW_URL/main/elm_scripts/plotting/plot_KG64_ELM_output.py \
-   && chmod 775 plot_KG64_ELM_output.py
+   && chmod 775 plot_KG64_ELM_output.py \
+   && wget $TOOLS_REPOSITORY_RAW_URL/main/elm_scripts/plotting/plot_ELM_output.py \
+   && chmod 775 plot_ELM_output.py
 
 # add Ben Sulman's matplotlib plotting ascetics defaults
 RUN cd "/home/${NB_USER}" \
@@ -78,14 +73,7 @@ RUN cd "/home/${NB_USER}" \
    && fix-permissions "/home/${NB_USER}"
 
 # Setup default user, when enter docker container
-#USER ${UID}:${GID}
-#WORKDIR /home/${USER}
-# or change this to the scrpts or some other folder to house the default
-# scripts?
 USER ${NB_UID}
-#WORKDIR /home/${NB_UID}
 WORKDIR "${HOME}"
-#WORKDIR "/scripts"
-#WORKDIR "${HOME}/scripts"
 
 # EOF
