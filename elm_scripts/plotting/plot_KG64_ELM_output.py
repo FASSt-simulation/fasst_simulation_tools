@@ -67,7 +67,7 @@ ax=a[2,1]
 ax.legend()
 ax.set(title='N fluxes',xlabel='Year',ylabel='N flux (g N m$^{-2}$ day$^{-1}$)')
 
-f.savefig('C and N budgets.png',dpi=250)
+f.savefig('/home/jovyan/work/C_and_N_budgets.png',dpi=250)
 
 # Soil temperature and freezing
 f,a=plt.subplots(nrows=3,num='Soil temperature and ice',clear=True,figsize=(8,8))
@@ -94,6 +94,6 @@ ax=a[2]
 (output['SOILICE']/(output['SOILLIQ']+output['SOILICE'])).sel(time=timerange).T.plot(ax=ax,cbar_kwargs={'label':'Soil frozen water fraction'},cmap='Blues_r')
 ax.set(title='Soil moisture',xlabel='Year',ylabel='Depth (m)',ylim=(3,0))
 
-f.savefig('Temperature and ice.png',dpi=250)
+f.savefig('/home/jovyan/work/Temperature_and_ice.png',dpi=250)
 
 plt.show()
