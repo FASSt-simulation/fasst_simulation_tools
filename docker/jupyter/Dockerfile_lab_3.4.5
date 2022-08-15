@@ -1,0 +1,86 @@
+# ----------------------------------------------------------------------
+# JupyterLab Notebook for analyzing E3SM-ELM land model output
+# ----------------------------------------------------------------------
+
+#FROM jupyter/scipy-notebook:latest
+#FROM jupyter/datascience-notebook:latest
+#https://jupyter-docker-stacks.readthedocs.io/en/latest/
+#https://github.com/jupyter/docker-stacks/blob/master/base-notebook/Dockerfile
+#https://jupyter-docker-stacks.readthedocs.io/en/latest/using/selecting.html#jupyter-scipy-notebook
+# MORE INFO: https://jupyter-docker-stacks.readthedocs.io/en/latest/using/common.html
+# https://developers.refinitiv.com/en/article-catalog/article/how-to-set-up-and-run-data-science-development-environment-with-
+#https://towardsdatascience.com/how-to-run-jupyter-notebook-on-docker-7c9748ed209f
+FROM jupyter/scipy-notebook:lab-3.3.2
+#FROM jupyter/scipy-notebook:lab-3.4.5
+LABEL maintainer.name="Shawn P. Serbin" \
+      maintainer.email="sserbin@bnl.gov" \
+      author.name="Shawn P. Serbin" \
+      author.email="sserbin@bnl.gov" \
+      description="Jupyter-SciPy Container"
+
+ENV TOOLS_REPOSITORY_RAW_URL=https://raw.githubusercontent.com/FASSt-simulation/fasst_simulation_tools
+
+# install Python packages you often use
+RUN set -ex \
+   && conda install --quiet --yes \
+   # choose the Python packages you need
+   'matplotlib' \
+   'plotly' \
+   'folium' \
+   'dask' \
+   'pandas' \
+   'xarray' \
+   'geopandas' \
+   && conda clean --all -f -y \
+   && conda install --quiet --yes -c conda-forge \
+   'nc-time-axis' \
+   'netCDF4' \
+   && conda clean --all -f -y \
+   && rm -rf "/home/${NB_USER}/.cache/yarn" \
+   && rm -rf "/home/${NB_USER}/.node-gyp" \
+   && fix-permissions "${CONDA_DIR}" \
+   && fix-permissions "/home/${NB_USER}"
+
+# Make local directories to map in ELM output
+#RUN mkdir "/home/${NB_USER}/work" && \
+#    fix-permissions "/home/${NB_USER}"
+RUN mkdir "/home/${NB_USER}/scripts" \
+   && mkdir "/home/${NB_USER}/inputdata" \
+   && mkdir "/home/${NB_USER}/output" \
+   && fix-permissions "/home/${NB_USER}/scripts" \
+   && fix-permissions "/home/${NB_USER}/inputdata" \
+   && fix-permissions "/home/${NB_USER}/output" \
+   && fix-permissions "/home/${NB_USER}"
+
+# Copy in example plotting scripts for use with model output
+#https://raw.githubusercontent.com/FASSt-simulation/fasst_simulation_tools/main/elm_scripts/plotting/plot_KG64_ELM_output.py
+RUN cd "/home/${NB_USER}/scripts" \
+   && wget $TOOLS_REPOSITORY_RAW_URL/main/elm_scripts/plotting/plot_KG64_ELM_output.py \
+   && chmod 775 plot_KG64_ELM_output.py \
+   && wget $TOOLS_REPOSITORY_RAW_URL/main/elm_scripts/plotting/plot_ELM_output.py \
+   && chmod 775 plot_ELM_output.py
+
+# add Ben Sulman's matplotlib plotting ascetics defaults
+RUN cd "/home/${NB_USER}" \
+   && mkdir -p "/home/${NB_USER}/.config/matplotlib" \
+   && cd "/home/${NB_USER}/.config/matplotlib" \
+   && wget $TOOLS_REPOSITORY_RAW_URL/main/elm_scripts/plotting/matplotlibrc \
+   && cd "/home/${NB_USER}" \
+   && fix-permissions "/home/${NB_USER}"
+
+# jupyter notebook scripts
+RUN cd "/home/${NB_USER}/scripts" \
+   && wget $TOOLS_REPOSITORY_RAW_URL/main/notebooks/ngeearctic/ELM_plotting.ipynb \
+   && chmod 775 ELM_plotting.ipynb \
+   && wget $TOOLS_REPOSITORY_RAW_URL/main/notebooks/ngeearctic/run_ELM_KG64_basic.ipynb \
+   && chmod 775 run_ELM_KG64_basic.ipynb \
+   && wget $TOOLS_REPOSITORY_RAW_URL/main/notebooks/ngeearctic/plot_ELM_output.ipynb \
+   && chmod 775 plot_ELM_output.ipynb \
+   && wget $TOOLS_REPOSITORY_RAW_URL/main/notebooks/ngeearctic/run_plot_ELM_KG64_output.ipynb \
+   && chmod 775 run_plot_ELM_KG64_output.ipynb
+
+# Setup default user, when enter docker container
+USER ${NB_UID}
+WORKDIR "${HOME}"
+
+# EOF
