@@ -24,12 +24,9 @@ RUN set -ex \
    && conda install --quiet --yes \
    # choose the Python packages you need
    'matplotlib' \
-   'plotly' \
-   'folium' \
    'dask' \
    'pandas' \
    'xarray' \
-   'geopandas' \
    && conda clean --all -f -y \
    && conda install --quiet --yes -c conda-forge \
    'nc-time-axis' \
@@ -52,15 +49,13 @@ RUN mkdir "/home/${NB_USER}/scripts" \
    && fix-permissions "/home/${NB_USER}"
 
 # Copy in example plotting scripts for use with model output
-#https://raw.githubusercontent.com/FASSt-simulation/fasst_simulation_tools/main/elm_scripts/plotting/plot_KG64_ELM_output.py
+# add Ben Sulman's matplotlib plotting ascetics defaults
 RUN cd "/home/${NB_USER}/scripts" \
    && wget $TOOLS_REPOSITORY_RAW_URL/main/elm_scripts/plotting/plot_KG64_ELM_output.py \
    && chmod 775 plot_KG64_ELM_output.py \
    && wget $TOOLS_REPOSITORY_RAW_URL/main/elm_scripts/plotting/plot_ELM_output.py \
-   && chmod 775 plot_ELM_output.py
-
-# add Ben Sulman's matplotlib plotting ascetics defaults
-RUN cd "/home/${NB_USER}" \
+   && chmod 775 plot_ELM_output.py \
+   && cd "/home/${NB_USER}" \
    && mkdir -p "/home/${NB_USER}/.config/matplotlib" \
    && cd "/home/${NB_USER}/.config/matplotlib" \
    && wget $TOOLS_REPOSITORY_RAW_URL/main/elm_scripts/plotting/matplotlibrc \
