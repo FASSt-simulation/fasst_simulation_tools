@@ -75,8 +75,8 @@ RUN cd "/home/${NB_USER}/scripts" \
    && chmod 775 run_ELM_KG64_basic.ipynb \
    && wget $TOOLS_REPOSITORY_RAW_URL/main/notebooks/ngeearctic/plot_ELM_output.ipynb \
    && chmod 775 plot_ELM_output.ipynb \
-   && wget $TOOLS_REPOSITORY_RAW_URL/main/notebooks/ngeearctic/run_plot_ELM_KG64_output.ipynb \
-   && chmod 775 run_plot_ELM_KG64_output.ipynb
+   && wget $TOOLS_REPOSITORY_RAW_URL/main/notebooks/ngeearctic/run_plot_KG64_ELM_output.ipynb \
+   && chmod 775 run_plot_KG64_ELM_output.ipynb
 
 # Setup default user, when enter docker container
 USER ${NB_UID}
