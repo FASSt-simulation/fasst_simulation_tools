@@ -37,9 +37,7 @@ RUN set -ex \
    && fix-permissions "${CONDA_DIR}" \
    && fix-permissions "/home/${NB_USER}"
 
-# Make local directories to map in ELM output
-#RUN mkdir "/home/${NB_USER}/work" && \
-#    fix-permissions "/home/${NB_USER}"
+# Make local directories to use with plotting of ELM output
 RUN mkdir "/home/${NB_USER}/scripts" \
    && mkdir "/home/${NB_USER}/inputdata" \
    && mkdir "/home/${NB_USER}/output" \
@@ -62,7 +60,7 @@ RUN cd "/home/${NB_USER}/scripts" \
    && cd "/home/${NB_USER}" \
    && fix-permissions "/home/${NB_USER}"
 
-# jupyter notebook scripts
+# Add example jupyter notebook scripts
 RUN cd "/home/${NB_USER}/scripts" \
    && wget $TOOLS_REPOSITORY_RAW_URL/main/notebooks/ngeearctic/plot_ELM_variable.ipynb \
    && chmod 775 plot_ELM_variable.ipynb \
