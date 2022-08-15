@@ -70,7 +70,7 @@ RUN cd "/home/${NB_USER}" \
 # jupyter notebook scripts
 RUN cd "/home/${NB_USER}/scripts" \
    && wget $TOOLS_REPOSITORY_RAW_URL/main/notebooks/ngeearctic/plot_ELM_variable.ipynb \
-   && chmod 775 ELM_plotting.ipynb \
+   && chmod 775 plot_ELM_variable.ipynb \
    && wget $TOOLS_REPOSITORY_RAW_URL/main/notebooks/ngeearctic/run_ELM_KG64_basic.ipynb \
    && chmod 775 run_ELM_KG64_basic.ipynb \
    && wget $TOOLS_REPOSITORY_RAW_URL/main/notebooks/ngeearctic/plot_ELM_output.ipynb \
