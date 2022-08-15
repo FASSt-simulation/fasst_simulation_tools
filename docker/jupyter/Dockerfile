@@ -72,6 +72,17 @@ RUN cd "/home/${NB_USER}" \
    && cd "/home/${NB_USER}" \
    && fix-permissions "/home/${NB_USER}"
 
+# jupyter notebook scripts
+RUN cd "/home/${NB_USER}/scripts" \
+   && wget $TOOLS_REPOSITORY_RAW_URL/main/notebooks/ngeearctic/basic_plotting.ipynb \
+   && chmod 775 basic_plotting.ipynb \
+   && wget $TOOLS_REPOSITORY_RAW_URL/main/notebooks/ngeearctic/ELM_plotting.ipynb \
+   && chmod 775 ELM_plotting.ipynb \
+   && wget $TOOLS_REPOSITORY_RAW_URL/main/notebooks/ngeearctic/run_ELM_KG64_basic.ipynb \
+   && chmod 775 run_ELM_KG64_basic.ipynb \
+   && wget $TOOLS_REPOSITORY_RAW_URL/main/notebooks/ngeearctic/run_plot_ELM_KG64_output.ipynb \
+   && chmod 775 run_plot_ELM_KG64_output.ipynb
+
 # Setup default user, when enter docker container
 USER ${NB_UID}
 WORKDIR "${HOME}"
