@@ -34,6 +34,10 @@ case $i in
     final_spinup_years="${i#*=}"
     shift # past argument=value
     ;;
+    -trsy=*|--transient_years=*)
+    transient_years="${i#*=}"
+    shift # past argument=value
+    ;;
     -tsp=*|--timestep=*)
     timestep="${i#*=}"
     shift # past argument=value
@@ -84,6 +88,8 @@ site_group="${site_group:-NGEEArctic}"
 case_prefix="${case_prefix:-OLMT}"
 ad_spinup_years="${ad_spinup_years:-200}"
 final_spinup_years="${final_spinup_years:-600}"
+transient_years="${transient_years:--1}"
+# -1 is the default to run all years from 1850
 timestep="${timestep:-1}"
 # precipitation scaling defaults
 scale_rain="${scale_rain:-1.0}"
@@ -105,6 +111,7 @@ echo "Site Group = ${site_group}"
 echo "Case Prefix = ${case_prefix}"
 echo "Number of AD Spinup Simulation Years = ${ad_spinup_years}"
 echo "Number of Final Spinup Simulation Years = ${final_spinup_years}"
+echo "Number of Transient Simulation Years = ${transient_years}"
 echo "Model Timestep = ${timestep}"
 if [ ${scale_rain} != 1.0 ]; then
   echo "Forcing rainfall scaled by factor of ${scale_rain} starting on ${startdate_scale_rain}"
@@ -156,7 +163,8 @@ echo " "
 if python3 ./site_fullrun.py \
       --site ${site_code} --sitegroup ${site_group} --caseidprefix ${case_prefix} \
       --nyears_ad_spinup ${ad_spinup_years} --nyears_final_spinup ${final_spinup_years} \
-      --tstep ${timestep} --machine docker --compiler gnu --mpilib openmpi \
+      --nyears_transient ${transient_years} --tstep ${timestep} --machine docker \
+      --compiler gnu --mpilib openmpi \
       --cpl_bypass --gswp3 \
       --model_root /E3SM \
       --caseroot /output \

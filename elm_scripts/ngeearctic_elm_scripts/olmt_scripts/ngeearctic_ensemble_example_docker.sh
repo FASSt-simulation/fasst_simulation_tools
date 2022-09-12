@@ -10,7 +10,7 @@ cwd=$(pwd)
 cd /tools/OLMT
 
 # =======================================================================================
-### Setup and run an example ELM OLMT ensemble simulation for the Kougarok Mile 64 Site
+### Setup and run an example ELM OLMT ensemble simulation for a NGEE-Arctic research site
 for i in "$@"
 do
 case $i in
@@ -32,6 +32,10 @@ case $i in
     ;;
     -fsy=*|--final_spinup_years=*)
     final_spinup_years="${i#*=}"
+    shift # past argument=value
+    ;;
+    -trsy=*|--transient_years=*)
+    transient_years="${i#*=}"
     shift # past argument=value
     ;;
     -tsp=*|--timestep=*)
@@ -64,6 +68,7 @@ site_group="${site_group:-NGEEArctic}"
 case_prefix="${case_prefix:-OLMT_ens}"
 ad_spinup_years="${ad_spinup_years:-200}"
 final_spinup_years="${final_spinup_years:-600}"
+transient_years="${transient_years:--1}"
 timestep="${timestep:-1}"
 param_list="${param_list:-examples/parm_list_example}"
 num_ens="${num_ens:-6}"
@@ -78,6 +83,7 @@ echo "Site Group = ${site_group}"
 echo "Case Prefix = ${case_prefix}"
 echo "Number of AD Spinup Simulation Years = ${ad_spinup_years}"
 echo "Number of Final Spinup Simulation Years = ${final_spinup_years}"
+echo "Number of Transient Simulation Years = ${transient_years}"
 echo "Model Timestep = ${timestep}"
 echo "Input parameter list = ${param_list}"
 echo "Number of MCMC Ensembles = ${num_ens}"
@@ -121,7 +127,8 @@ echo " "
 if python3 ./site_fullrun.py \
       --site ${site_code} --sitegroup ${site_group} --caseidprefix ${case_prefix} \
       --nyears_ad_spinup ${ad_spinup_years} --nyears_final_spinup ${final_spinup_years} \
-      --tstep ${timestep} --machine docker --compiler gnu --mpilib mpi-serial \
+      --nyears_transient ${transient_years} --tstep ${timestep} --machine docker \
+      --compiler gnu --mpilib mpi-serial \
       --cpl_bypass --gswp3 \
       --model_root /E3SM \
       --caseroot /output \
@@ -135,7 +142,8 @@ if python3 ./site_fullrun.py \
       --metdir /inputdata/atm/datm7/atm_forcing.datm7.GSWP3.0.5d.v2.c180716_NGEE-Grid/cpl_bypass_${site_name}-Grid \
       --domainfile /inputdata/share/domains/domain.clm/domain.lnd.1x1pt_${site_name}-GRID_navy.nc \
       --surffile /inputdata/lnd/clm2/surfdata_map/surfdata_1x1pt_${site_name}-GRID_simyr1850_c360x720_c171002.nc \
-      --landusefile /inputdata/lnd/clm2/surfdata_map/landuse.timeseries_1x1pt_${site_name}-GRID_simyr1850-2015_c180423.nc
+      --landusefile /inputdata/lnd/clm2/surfdata_map/landuse.timeseries_1x1pt_${site_name}-GRID_simyr1850-2015_c180423.nc \
+      & sleep 10
 
 then
   wait
