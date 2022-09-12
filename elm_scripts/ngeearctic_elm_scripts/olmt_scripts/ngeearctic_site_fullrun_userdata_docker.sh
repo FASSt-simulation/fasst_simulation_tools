@@ -62,6 +62,14 @@ case $i in
     startdate_scale_ndep="${i#*=}"
     shift # past argument=value
     ;;
+    -sclp=*|--scale_pdep=*)
+    scale_pdep="${i#*=}"
+    shift # past argument=value
+    ;;
+    -sdsclp=*|--startdate_scale_pdep=*)
+    startdate_scale_pdep="${i#*=}"
+    shift # past argument=value
+    ;;
     *)
         # unknown option
     ;;
@@ -82,9 +90,11 @@ scale_rain="${scale_rain:-1.0}"
 scale_snow="${scale_snow:-1.0}"
 startdate_scale_rain="${startdate_scale_rain:-99991231}"
 startdate_scale_snow="${startdate_scale_snow:-99991231}"
-# N/P dep scaling?
+# N/P dep scaling
 scale_ndep="${scale_ndep:-1.0}"
 startdate_scale_ndep="${startdate_scale_ndep:-99991231}"
+scale_pdep="${scale_pdep:-1.0}"
+startdate_scale_pdep="${startdate_scale_pdep:-99991231}"
 
 # print back selected or set options to the user
 echo " "
@@ -107,6 +117,10 @@ fi
 if [ ${scale_ndep} != 1.0 ]; then
   echo "N deposition scaled by factor of ${scale_ndep} starting on ${startdate_scale_ndep}"
   scaling_args="$scaling_args --scale_ndep ${scale_ndep} --startdate_scale_ndep ${startdate_scale_ndep}"
+fi 
+if [ ${scale_pdep} != 1.0 ]; then
+  echo "P deposition scaled by factor of ${scale_pdep} starting on ${startdate_scale_pdep}"
+  scaling_args="$scaling_args --scale_pdep ${scale_pdep} --startdate_scale_pdep ${startdate_scale_pdep}"
 fi 
 # =======================================================================================
 
