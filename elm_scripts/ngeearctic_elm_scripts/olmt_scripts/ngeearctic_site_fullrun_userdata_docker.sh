@@ -42,6 +42,38 @@ case $i in
     timestep="${i#*=}"
     shift # past argument=value
     ;;
+    -sclr=*|--scale_rain=*)
+    scale_rain="${i#*=}"
+    shift # past argument=value
+    ;;
+    -sdsclr=*|--startdate_scale_rain=*)
+    startdate_scale_rain="${i#*=}"
+    shift # past argument=value
+    ;;    
+    -scls=*|--scale_snow=*)
+    scale_snow="${i#*=}"
+    shift # past argument=value
+    ;;
+    -sdscls=*|--startdate_scale_snow=*)
+    startdate_scale_snow="${i#*=}"
+    shift # past argument=value
+    ;;
+    -scln=*|--scale_ndep=*)
+    scale_ndep="${i#*=}"
+    shift # past argument=value
+    ;;
+    -sdscln=*|--startdate_scale_ndep=*)
+    startdate_scale_ndep="${i#*=}"
+    shift # past argument=value
+    ;;
+    -sclp=*|--scale_pdep=*)
+    scale_pdep="${i#*=}"
+    shift # past argument=value
+    ;;
+    -sdsclp=*|--startdate_scale_pdep=*)
+    startdate_scale_pdep="${i#*=}"
+    shift # past argument=value
+    ;;
     *)
         # unknown option
     ;;
@@ -59,6 +91,16 @@ final_spinup_years="${final_spinup_years:-600}"
 transient_years="${transient_years:--1}"
 # -1 is the default to run all years from 1850
 timestep="${timestep:-1}"
+# precipitation scaling defaults
+scale_rain="${scale_rain:-1.0}"
+scale_snow="${scale_snow:-1.0}"
+startdate_scale_rain="${startdate_scale_rain:-99991231}"
+startdate_scale_snow="${startdate_scale_snow:-99991231}"
+# N/P dep scaling
+scale_ndep="${scale_ndep:-1.0}"
+startdate_scale_ndep="${startdate_scale_ndep:-99991231}"
+scale_pdep="${scale_pdep:-1.0}"
+startdate_scale_pdep="${startdate_scale_pdep:-99991231}"
 
 # print back selected or set options to the user
 echo " "
@@ -71,6 +113,22 @@ echo "Number of AD Spinup Simulation Years = ${ad_spinup_years}"
 echo "Number of Final Spinup Simulation Years = ${final_spinup_years}"
 echo "Number of Transient Simulation Years = ${transient_years}"
 echo "Model Timestep = ${timestep}"
+if [ ${scale_rain} != 1.0 ]; then
+  echo "Forcing rainfall scaled by factor of ${scale_rain} starting on ${startdate_scale_rain}"
+  scaling_args="--scale_rain ${scale_rain} --startdate_scale_rain ${startdate_scale_rain}"
+fi
+if [ ${scale_snow} != 1.0 ]; then
+  echo "Forcing snowfall scaled by factor of ${scale_snow} starting on ${startdate_scale_snow}"
+  scaling_args="$scaling_args  --scale_snow ${scale_snow} --startdate_scale_snow ${startdate_scale_snow}"
+fi
+if [ ${scale_ndep} != 1.0 ]; then
+  echo "N deposition scaled by factor of ${scale_ndep} starting on ${startdate_scale_ndep}"
+  scaling_args="$scaling_args --scale_ndep ${scale_ndep} --startdate_scale_ndep ${startdate_scale_ndep}"
+fi 
+if [ ${scale_pdep} != 1.0 ]; then
+  echo "P deposition scaled by factor of ${scale_pdep} starting on ${startdate_scale_pdep}"
+  scaling_args="$scaling_args --scale_pdep ${scale_pdep} --startdate_scale_pdep ${startdate_scale_pdep}"
+fi 
 # =======================================================================================
 
 # =======================================================================================
@@ -118,6 +176,7 @@ if python3 ./site_fullrun.py \
       --domainfile /inputdata/share/domains/domain.clm/domain.lnd.1x1pt_${site_name}-GRID_navy.nc \
       --surffile /inputdata/lnd/clm2/surfdata_map/surfdata_1x1pt_${site_name}-GRID_simyr1850_c360x720_c171002.nc \
       --landusefile /inputdata/lnd/clm2/surfdata_map/landuse.timeseries_1x1pt_${site_name}-GRID_simyr1850-2015_c180423.nc \
+      ${scaling_args} \
       & sleep 10
 
 then
