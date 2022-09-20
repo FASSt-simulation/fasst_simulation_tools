@@ -113,6 +113,7 @@ echo "Number of AD Spinup Simulation Years = ${ad_spinup_years}"
 echo "Number of Final Spinup Simulation Years = ${final_spinup_years}"
 echo "Number of Transient Simulation Years = ${transient_years}"
 echo "Model Timestep = ${timestep}"
+echo " "
 if [ ${scale_rain} != 1.0 ]; then
   echo "Forcing rainfall scaled by factor of ${scale_rain} starting on ${startdate_scale_rain}"
   scaling_args="--scale_rain ${scale_rain} --startdate_scale_rain ${startdate_scale_rain}"
@@ -128,7 +129,13 @@ fi
 if [ ${scale_pdep} != 1.0 ]; then
   echo "P deposition scaled by factor of ${scale_pdep} starting on ${startdate_scale_pdep}"
   scaling_args="$scaling_args --scale_pdep ${scale_pdep} --startdate_scale_pdep ${startdate_scale_pdep}"
-fi 
+fi
+if [ ${transient_years} != -1 ]; then
+  sim_years="--nyears_ad_spinup ${ad_spinup_years} --nyears_final_spinup ${final_spinup_years} \
+  --nyears_transient ${transient_years}"
+else
+  sim_years="--nyears_ad_spinup ${ad_spinup_years} --nyears_final_spinup ${final_spinup_years}"
+fi
 # =======================================================================================
 
 # =======================================================================================
@@ -160,10 +167,33 @@ echo " "
 
 # =======================================================================================
 # create the OLMT run command
+echo " "
+echo "**** User OLMT run command: "
+runcmd="python3 ./site_fullrun.py \
+      --site ${site_code} --sitegroup ${site_group} --caseidprefix ${case_prefix} \
+      ${sim_years} --tstep ${timestep} --machine docker \
+      --compiler gnu --mpilib openmpi \
+      --cpl_bypass --gswp3 \
+      --model_root /E3SM \
+      --caseroot /output \
+      --ccsm_input /inputdata \
+      --runroot /output \
+      --spinup_vars \
+      --nopointdata \
+      --metdir /inputdata/atm/datm7/atm_forcing.datm7.GSWP3.0.5d.v2.c180716_NGEE-Grid/cpl_bypass_${site_name}-Grid \
+      --domainfile /inputdata/share/domains/domain.clm/domain.lnd.1x1pt_${site_name}-GRID_navy.nc \
+      --surffile /inputdata/lnd/clm2/surfdata_map/surfdata_1x1pt_${site_name}-GRID_simyr1850_c360x720_c171002.nc \
+      --landusefile /inputdata/lnd/clm2/surfdata_map/landuse.timeseries_1x1pt_${site_name}-GRID_simyr1850-2015_c180423.nc \
+      ${scaling_args} \
+      & sleep 10"
+echo ${runcmd}
+echo " "
+echo " "
+
+echo "**** Running OLMT: "
 if python3 ./site_fullrun.py \
       --site ${site_code} --sitegroup ${site_group} --caseidprefix ${case_prefix} \
-      --nyears_ad_spinup ${ad_spinup_years} --nyears_final_spinup ${final_spinup_years} \
-      --nyears_transient ${transient_years} --tstep ${timestep} --machine docker \
+      ${sim_years} --tstep ${timestep} --machine docker \
       --compiler gnu --mpilib openmpi \
       --cpl_bypass --gswp3 \
       --model_root /E3SM \
