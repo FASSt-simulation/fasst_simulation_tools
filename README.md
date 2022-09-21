@@ -1,3 +1,3 @@
 # FASSt-Simulation Run Scripts and Analysis Tools
-Scripts and tools for running the FASSt-simulation model containers
+Scripts and tools for running the FASSt-simulation model containers and analyzing the outputs
 
