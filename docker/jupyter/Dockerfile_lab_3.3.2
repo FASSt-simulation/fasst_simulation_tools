@@ -46,31 +46,6 @@ RUN mkdir "/home/${NB_USER}/scripts" \
    && fix-permissions "/home/${NB_USER}/output" \
    && fix-permissions "/home/${NB_USER}"
 
-# Copy in example plotting scripts for use with model output
-# add Ben Sulman's matplotlib plotting ascetics defaults
-RUN cd "/home/${NB_USER}/scripts" \
-   && wget $TOOLS_REPOSITORY_RAW_URL/main/elm_scripts/plotting/plot_KG64_ELM_output.py \
-   && chmod 775 plot_KG64_ELM_output.py \
-   && wget $TOOLS_REPOSITORY_RAW_URL/main/elm_scripts/plotting/plot_ELM_output.py \
-   && chmod 775 plot_ELM_output.py \
-   && cd "/home/${NB_USER}" \
-   && mkdir -p "/home/${NB_USER}/.config/matplotlib" \
-   && cd "/home/${NB_USER}/.config/matplotlib" \
-   && wget $TOOLS_REPOSITORY_RAW_URL/main/elm_scripts/plotting/matplotlibrc \
-   && cd "/home/${NB_USER}" \
-   && fix-permissions "/home/${NB_USER}"
-
-# Add example jupyter notebook scripts
-RUN cd "/home/${NB_USER}/scripts" \
-   && wget $TOOLS_REPOSITORY_RAW_URL/main/notebooks/ngeearctic/plot_ELM_variable.ipynb \
-   && chmod 775 plot_ELM_variable.ipynb \
-   && wget $TOOLS_REPOSITORY_RAW_URL/main/notebooks/ngeearctic/run_ELM_KG64_basic.ipynb \
-   && chmod 775 run_ELM_KG64_basic.ipynb \
-   && wget $TOOLS_REPOSITORY_RAW_URL/main/notebooks/ngeearctic/plot_ELM_output.ipynb \
-   && chmod 775 plot_ELM_output.ipynb \
-   && wget $TOOLS_REPOSITORY_RAW_URL/main/notebooks/ngeearctic/run_plot_KG64_ELM_output.ipynb \
-   && chmod 775 run_plot_KG64_ELM_output.ipynb
-
 # Setup default user, when enter docker container
 USER ${NB_UID}
 WORKDIR "${HOME}"
