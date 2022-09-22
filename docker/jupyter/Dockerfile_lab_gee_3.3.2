@@ -1,5 +1,6 @@
 # ----------------------------------------------------------------------
 # JupyterLab Notebook for analyzing E3SM-ELM land model output
+# with Google Earth Engine and GEEmap
 # ----------------------------------------------------------------------
 
 FROM jupyter/scipy-notebook:lab-3.3.2
@@ -68,12 +69,16 @@ RUN cd "/home/${NB_USER}" \
 RUN cd "/home/${NB_USER}/scripts" \
    && wget $TOOLS_REPOSITORY_RAW_URL/main/notebooks/ngeearctic/plot_ELM_variable.ipynb \
    && chmod 775 plot_ELM_variable.ipynb \
-   && wget $TOOLS_REPOSITORY_RAW_URL/main/notebooks/ngeearctic/run_ELM_KG64_basic.ipynb \
-   && chmod 775 run_ELM_KG64_basic.ipynb \
    && wget $TOOLS_REPOSITORY_RAW_URL/main/notebooks/ngeearctic/plot_ELM_output.ipynb \
    && chmod 775 plot_ELM_output.ipynb \
-   && wget $TOOLS_REPOSITORY_RAW_URL/main/notebooks/ngeearctic/run_plot_KG64_ELM_output.ipynb \
-   && chmod 775 run_plot_KG64_ELM_output.ipynb
+   && wget $TOOLS_REPOSITORY_RAW_URL/main/notebooks/ngeearctic/plot_ELM_radiation.ipynb \
+   && chmod 775 plot_ELM_radiation.ipynb
+
+# add back in if we want examples showing how to run the model from within a notebook
+#   && wget $TOOLS_REPOSITORY_RAW_URL/main/notebooks/ngeearctic/run_ELM_KG64_basic.ipynb \
+#   && chmod 775 run_ELM_KG64_basic.ipynb \
+#   && wget $TOOLS_REPOSITORY_RAW_URL/main/notebooks/ngeearctic/run_plot_KG64_ELM_output.ipynb \
+#   && chmod 775 run_plot_KG64_ELM_output.ipynb
 
 # Setup default user, when enter docker container
 USER ${NB_UID}
