@@ -225,7 +225,7 @@ fi
 echo " "
 echo " "
 echo " "
-echo "**** Postprocessing ELM output in:"
+echo "**** Postprocessing ELM output in: "
 echo "/output/cime_run_dirs/${case_prefix}_${site_code}_ICB20TRCNPRDCTCBC/run"
 echo " "
 echo " "
