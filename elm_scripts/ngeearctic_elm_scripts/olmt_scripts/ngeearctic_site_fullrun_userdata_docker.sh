@@ -42,6 +42,22 @@ case $i in
     timestep="${i#*=}"
     shift # past argument=value
     ;;
+    -addt=*|--add_temperature=*)
+    add_temperature="${i#*=}"
+    shift # past argument=value
+    ;;
+    -sdaddt=*|--startdate_add_temperature=*)
+    startdate_add_temperature="${i#*=}"
+    shift # past argument=value
+    ;;    
+    -addco2=*|--add_co2=*)
+    add_co2="${i#*=}"
+    shift # past argument=value
+    ;;
+    -sdaddco2=*|--startdate_add_co2=*)
+    startdate_add_co2="${i#*=}"
+    shift # past argument=value
+    ;;    
     -sclr=*|--scale_rain=*)
     scale_rain="${i#*=}"
     shift # past argument=value
@@ -91,6 +107,11 @@ final_spinup_years="${final_spinup_years:-600}"
 transient_years="${transient_years:--1}"
 # -1 is the default to run all years from 1850
 timestep="${timestep:-1}"
+# temp and co2 additions:
+add_temperature="${add_temperature:-0.0}"
+add_co2="${add_co2:-0.0}"
+startdate_add_temperature="${startdate_add_temperature:-99991231}"
+startdate_add_co2="${startdate_add_co2:-99991231}"
 # precipitation scaling defaults
 scale_rain="${scale_rain:-1.0}"
 scale_snow="${scale_snow:-1.0}"
@@ -113,10 +134,17 @@ echo "Number of AD Spinup Simulation Years = ${ad_spinup_years}"
 echo "Number of Final Spinup Simulation Years = ${final_spinup_years}"
 echo "Number of Transient Simulation Years = ${transient_years}"
 echo "Model Timestep = ${timestep}"
-echo " "
+if [ ${add_temperature} != 0.0 ]; then
+  echo "Adding ${add_temperature} degreesC to forcing temperature starting on ${startdate_add_temperature}"
+  scaling_args="--add_temperature ${add_temperature} --startdate_add_temperature ${startdate_add_temperature}"
+fi
+if [ ${add_co2} != 0.0 ]; then
+  echo "Adding ${add_co2} ppm to forcing CO2 starting on ${startdate_add_co2}"
+  scaling_args="$scaling_args --add_co2 ${add_co2}} --startdate_scale_rain ${startdate_add_co2}"
+fi
 if [ ${scale_rain} != 1.0 ]; then
   echo "Forcing rainfall scaled by factor of ${scale_rain} starting on ${startdate_scale_rain}"
-  scaling_args="--scale_rain ${scale_rain} --startdate_scale_rain ${startdate_scale_rain}"
+  scaling_args="$scaling_args --scale_rain ${scale_rain} --startdate_scale_rain ${startdate_scale_rain}"
 fi
 if [ ${scale_snow} != 1.0 ]; then
   echo "Forcing snowfall scaled by factor of ${scale_snow} starting on ${startdate_scale_snow}"
@@ -136,6 +164,7 @@ if [ ${transient_years} != -1 ]; then
 else
   sim_years="--nyears_ad_spinup ${ad_spinup_years} --nyears_final_spinup ${final_spinup_years}"
 fi
+echo " "
 # =======================================================================================
 
 # =======================================================================================
