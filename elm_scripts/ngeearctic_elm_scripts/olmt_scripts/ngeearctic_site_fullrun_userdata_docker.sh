@@ -140,7 +140,7 @@ if [ ${add_temperature} != 0.0 ]; then
 fi
 if [ ${add_co2} != 0.0 ]; then
   echo "Adding ${add_co2} ppm to forcing CO2 starting on ${startdate_add_co2}"
-  scaling_args="$scaling_args --add_co2 ${add_co2}} --startdate_scale_co2 ${startdate_add_co2}"
+  scaling_args="$scaling_args --add_co2 ${add_co2}} --startdate_add_co2 ${startdate_add_co2}"
 fi
 if [ ${scale_rain} != 1.0 ]; then
   echo "Forcing rainfall scaled by factor of ${scale_rain} starting on ${startdate_scale_rain}"
