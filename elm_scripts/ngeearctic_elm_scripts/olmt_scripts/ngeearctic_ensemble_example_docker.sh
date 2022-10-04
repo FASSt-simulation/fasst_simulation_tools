@@ -70,7 +70,7 @@ ad_spinup_years="${ad_spinup_years:-200}"
 final_spinup_years="${final_spinup_years:-600}"
 transient_years="${transient_years:--1}"
 timestep="${timestep:-1}"
-param_list="${param_list:-/scripts/parm_list_example_kougarok}"
+param_list="${param_list:-/scripts/param_list_example_kougarok}"
 num_ens="${num_ens:-6}"
 num_groups="${num_groups:-3}"
 
