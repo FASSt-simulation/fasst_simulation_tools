@@ -70,7 +70,7 @@ ad_spinup_years="${ad_spinup_years:-200}"
 final_spinup_years="${final_spinup_years:-600}"
 transient_years="${transient_years:--1}"
 timestep="${timestep:-1}"
-param_list="${param_list:-examples/parm_list_example}"
+param_list="${param_list:-/scripts/parm_list_example_kougarok}"
 num_ens="${num_ens:-6}"
 num_groups="${num_groups:-3}"
 
@@ -88,6 +88,13 @@ echo "Model Timestep = ${timestep}"
 echo "Input parameter list = ${param_list}"
 echo "Number of MCMC Ensembles = ${num_ens}"
 echo "Number of MPI groups = ${num_groups}"
+if [ ${transient_years} != -1 ]; then
+  sim_years="--nyears_ad_spinup ${ad_spinup_years} --nyears_final_spinup ${final_spinup_years} \
+  --nyears_transient ${transient_years}"
+else
+  sim_years="--nyears_ad_spinup ${ad_spinup_years} --nyears_final_spinup ${final_spinup_years}"
+fi
+echo " "
 # =======================================================================================
 
 # =======================================================================================
@@ -122,12 +129,34 @@ echo "Building ensemble simulations with OLMT source: "$(pwd)
 echo "*****************************************************************"
 echo " "
 echo " "
+echo "**** User OLMT run command: "
+runcmd="python3 ./site_fullrun.py \
+      --site ${site_code} --sitegroup ${site_group} --caseidprefix ${case_prefix} \
+      ${sim_years} --tstep ${timestep} --machine docker \
+      --compiler gnu --mpilib mpi-serial \
+      --cpl_bypass --gswp3 \
+      --model_root /E3SM \
+      --caseroot /output \
+      --ccsm_input /inputdata \
+      --runroot /output \
+      --spinup_vars \
+      --parm_list ${param_list} \
+      --mc_ensemble ${num_ens} \
+      --nopointdata \
+      --metdir /inputdata/atm/datm7/atm_forcing.datm7.GSWP3.0.5d.v2.c180716_NGEE-Grid/cpl_bypass_${site_name}-Grid \
+      --domainfile /inputdata/share/domains/domain.clm/domain.lnd.1x1pt_${site_name}-GRID_navy.nc \
+      --surffile /inputdata/lnd/clm2/surfdata_map/surfdata_1x1pt_${site_name}-GRID_simyr1850_c360x720_c171002.nc \
+      --landusefile /inputdata/lnd/clm2/surfdata_map/landuse.timeseries_1x1pt_${site_name}-GRID_simyr1850-2015_c180423.nc \
+      ${scaling_args} \
+      & sleep 10"
+echo ${runcmd}
+echo " "
+echo " "
 
 # create the OLMT run command
 if python3 ./site_fullrun.py \
       --site ${site_code} --sitegroup ${site_group} --caseidprefix ${case_prefix} \
-      --nyears_ad_spinup ${ad_spinup_years} --nyears_final_spinup ${final_spinup_years} \
-      --nyears_transient ${transient_years} --tstep ${timestep} --machine docker \
+      ${sim_years} --tstep ${timestep} --machine docker \
       --compiler gnu --mpilib mpi-serial \
       --cpl_bypass --gswp3 \
       --model_root /E3SM \
