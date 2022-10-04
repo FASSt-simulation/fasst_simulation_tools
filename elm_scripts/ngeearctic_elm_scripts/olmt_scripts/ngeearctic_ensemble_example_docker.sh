@@ -186,6 +186,8 @@ cd ${cwd}
 sleep 2
 
 #### Postprocess
+# Copy the example parameter file to the OLMT ensemble output folder
+cp ${param_list} /output/cime_run_dirs/UQ/${case_prefix}_${site_code}_ICB20TRCNPRDCTCBC/.
 ### Collapse transient simulation output into a single netCDF file
 echo " "
 echo " "
