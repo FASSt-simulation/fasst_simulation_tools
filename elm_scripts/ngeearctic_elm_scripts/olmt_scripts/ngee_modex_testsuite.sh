@@ -44,11 +44,11 @@ done
 # set defaults:
 site_name="${site_name:-kougarok}"
 reset_containers="${reset_containers:-no}"
-ad_spinup_years="${ad_spinup_years:-5}"
-final_spinup_years="${final_spinup_years:-5}"
-transient_years="${transient_years:-5}"
+ad_spinup_years="${ad_spinup_years:-20}"
+final_spinup_years="${final_spinup_years:-30}"
+transient_years="${transient_years:-10}"
 run_container_name="${run_container_name:-fasstsimulation/elm-builds:elm_v2-for-ngee_multiarch}"
-jupyterlab_container_name="${jupyterlab_container_name:-fasstsimulation/elm-builds:elm_v2-for-ngee_multiarch}"
+jupyterlab_container_name="${jupyterlab_container_name:-fasstsimulation/fasst_simulation_tools:elmlab_3.3.2}"
 
 echo $run_container_name
 echo $jupyterlab_container_name
@@ -77,17 +77,17 @@ docker run --rm -t -i --hostname=docker --user modeluser -v \
 test_elmdata:/inputdata ${run_container_name} \
 /scripts/download_elm_singlesite_forcing_data.sh
 
+# set common args for all runs:
+common_args="${run_container_name} /scripts/OLMT_docker_example.sh --site_name=${site_name}"
+common_args="${common_args} --ad_spinup_years=${ad_spinup_years} --final_spinup_years=${final_spinup_years} --transient_years=${transient_years}"
+
 # run base case
 docker run --rm -t -i --hostname=docker --user modeluser -v test_elmdata:/inputdata \
--v test_elmoutput:/output ${run_container_name} \
-/scripts/OLMT_docker_example.sh --site_name=${site_name} --ad_spinup_years=${ad_spinup_years} \
---final_spinup_years=${final_spinup_years} --transient_years=${transient_years}
+-v test_elmoutput:/output ${common_args}
 
 # test scaling options
 docker run --rm -t -i --hostname=docker --user modeluser -v test_elmdata:/inputdata \
--v test_elmoutput:/output ${run_container_name} \
-/scripts/OLMT_docker_example.sh --site_name=${site_name} --ad_spinup_years=${ad_spinup_years} \
---final_spinup_years=${final_spinup_years} --transient_years=${transient_years} \
+-v test_elmoutput:/output ${common_args} \
 --scale_ndep=2.0 --startdate_scale_ndep=18500101 \
 --scale_pdep=2.0 --startdate_scale_pdep=18500101 \
 --scale_rain=2.0 --startdate_scale_rain=18500101 \
@@ -97,9 +97,7 @@ docker run --rm -t -i --hostname=docker --user modeluser -v test_elmdata:/inputd
 --case_prefix=sclmore
 
 docker run --rm -t -i --hostname=docker --user modeluser -v test_elmdata:/inputdata \
--v test_elmoutput:/output ${run_container_name} \
-/scripts/OLMT_docker_example.sh --site_name=${site_name} --ad_spinup_years=${ad_spinup_years} \
---final_spinup_years=${final_spinup_years} --transient_years=${transient_years} \
+-v test_elmoutput:/output ${common_args} \
 --scale_ndep=0.5 --startdate_scale_ndep=18500101 \
 --scale_pdep=0.5 --startdate_scale_pdep=18500101 \
 --scale_rain=0.5 --startdate_scale_rain=18500101 \
@@ -107,6 +105,41 @@ docker run --rm -t -i --hostname=docker --user modeluser -v test_elmdata:/inputd
 --add_temperature=-5.0 --startdate_add_temperature=18500101 \
 --add_co2=-200.0 --startdate_add_co2=18500101 \
 --case_prefix=sclless
+
+############
+# test out cases we might actually want to run:
+###########
+docker run --rm -t -i --hostname=docker --user modeluser -v elmdata:/inputdata -v elmoutput:/output ${common_args} --case_prefix="base"
+
+docker run --rm -t -i --hostname=docker --user modeluser -v elmdata:/inputdata -v elmoutput:/output ${common_args} \
+--scale_snow=1.4 --startdate_scale_snow=18550101 --scale_rain=2.0 --startdate_scale_rain=18550101 --case_prefix="future_P"
+
+docker run --rm -t -i --hostname=docker --user modeluser -v elmdata:/inputdata -v elmoutput:/output ${common_args} \
+--add_temperature=8.5 --startdate_add_temperature=18550101 --case_prefix="future_T"
+
+docker run --rm -t -i --hostname=docker --user modeluser -v elmdata:/inputdata -v elmoutput:/output ${common_args} \
+--scale_snow=1.4 --startdate_scale_snow=18550101 --scale_rain=2.0 --startdate_scale_rain=18550101 \
+--add_temperature=8.5 --startdate_add_temperature=18550101 --case_prefix="future_TP"
+
+docker run --rm -t -i --hostname=docker --user modeluser -v elmdata:/inputdata -v elmoutput:/output ${common_args} \
+--scale_ndep=2.0 --startdate_scale_ndep=18550101 --case_prefix="double_N"
+
+docker run --rm -t -i --hostname=docker --user modeluser -v elmdata:/inputdata -v elmoutput:/output ${common_args} \
+--scale_pdep=2.0 --startdate_scale_pdep=18550101 --case_prefix="double_P"
+
+docker run --rm -t -i --hostname=docker --user modeluser -v elmdata:/inputdata -v elmoutput:/output ${common_args} \
+--scale_pdep=2.0 --startdate_scale_pdep=18550101 --scale_ndep=2.0 --startdate_scale_ndep=18550101 \
+--case_prefix="double_NP"
+
+docker run --rm -t -i --hostname=docker --user modeluser -v elmdata:/inputdata -v elmoutput:/output ${common_args} \
+--scale_pdep=0.5 --startdate_scale_pdep=18550101 --case_prefix="halfScale_P"
+
+docker run --rm -t -i --hostname=docker --user modeluser -v elmdata:/inputdata -v elmoutput:/output ${common_args} \
+--scale_ndep=0.5 --startdate_scale_ndep=18550101 --case_prefix="halfScale_N"
+
+docker run --rm -t -i --hostname=docker --user modeluser -v elmdata:/inputdata -v elmoutput:/output ${common_args} \
+--scale_ndep=0.5 --startdate_scale_ndep=18550101 --scale_pdep=0.5 --stardate_scale_pdep=18550101 \
+--case_prefix="halfScale_NP" 
 
 # print some info to screen.
 echo " "
