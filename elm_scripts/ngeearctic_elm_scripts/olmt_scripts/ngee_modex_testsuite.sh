@@ -112,13 +112,13 @@ docker run --rm -t -i --hostname=docker --user modeluser -v test_elmdata:/inputd
 docker run --rm -t -i --hostname=docker --user modeluser -v elmdata:/inputdata -v elmoutput:/output ${common_args} --case_prefix="base"
 
 docker run --rm -t -i --hostname=docker --user modeluser -v elmdata:/inputdata -v elmoutput:/output ${common_args} \
---scale_snow=1.4 --stardate_scale_snow=18550101 --scale_rain=2.0 --startdate_scale_rain=18550101 --case_prefix="future_P"
+--scale_snow=1.4 --startdate_scale_snow=18550101 --scale_rain=2.0 --startdate_scale_rain=18550101 --case_prefix="future_P"
 
 docker run --rm -t -i --hostname=docker --user modeluser -v elmdata:/inputdata -v elmoutput:/output ${common_args} \
 --add_temperature=8.5 --startdate_add_temperature=18550101 --case_prefix="future_T"
 
 docker run --rm -t -i --hostname=docker --user modeluser -v elmdata:/inputdata -v elmoutput:/output ${common_args} \
---scale_snow=1.4 --stardate_scale_snow=18550101 --scale_rain=2.0 --startdate_scale_rain=18550101 \
+--scale_snow=1.4 --startdate_scale_snow=18550101 --scale_rain=2.0 --startdate_scale_rain=18550101 \
 --add_temperature=8.5 --startdate_add_temperature=18550101 --case_prefix="future_TP"
 
 docker run --rm -t -i --hostname=docker --user modeluser -v elmdata:/inputdata -v elmoutput:/output ${common_args} \
