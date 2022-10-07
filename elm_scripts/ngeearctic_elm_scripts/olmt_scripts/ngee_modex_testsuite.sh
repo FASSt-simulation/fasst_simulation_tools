@@ -63,8 +63,8 @@ fi
 
 # setup volumes specific for testing suite
 echo "Creating test docker volumes..."
-docker volume create test_elmdata
-docker volume create test_elmoutput
+docker volume create elmdata
+docker volume create elmoutput
 
 # pull latest version of docker containers
 echo "Getting latest version of containers..."
@@ -82,34 +82,34 @@ common_args="${run_container_name} /scripts/OLMT_docker_example.sh --site_name=$
 common_args="${common_args} --ad_spinup_years=${ad_spinup_years} --final_spinup_years=${final_spinup_years} --transient_years=${transient_years}"
 
 # run base case
-docker run --rm -t -i --hostname=docker --user modeluser -v test_elmdata:/inputdata \
--v test_elmoutput:/output ${common_args}
+docker run --rm -t -i --hostname=docker --user modeluser -v elmdata:/inputdata \
+-v elmoutput:/output ${common_args}
 
 # test scaling options
-docker run --rm -t -i --hostname=docker --user modeluser -v test_elmdata:/inputdata \
--v test_elmoutput:/output ${common_args} \
---scale_ndep=2.0 --startdate_scale_ndep=18500101 \
---scale_pdep=2.0 --startdate_scale_pdep=18500101 \
---scale_rain=2.0 --startdate_scale_rain=18500101 \
---scale_snow=2.0 --startdate_scale_snow=18500101 \
---add_temperature=5.0 --startdate_add_temperature=18500101 \
---add_co2=200.0 --startdate_add_co2=18500101 \
---case_prefix=sclmore
+#docker run --rm -t -i --hostname=docker --user modeluser -v elmdata:/inputdata \
+#-v elmoutput:/output ${common_args} \
+#--scale_ndep=2.0 --startdate_scale_ndep=18500101 \
+#--scale_pdep=2.0 --startdate_scale_pdep=18500101 \
+#--scale_rain=2.0 --startdate_scale_rain=18500101 \
+#--scale_snow=2.0 --startdate_scale_snow=18500101 \
+#--add_temperature=5.0 --startdate_add_temperature=18500101 \
+#--add_co2=200.0 --startdate_add_co2=18500101 \
+#--case_prefix=sclmore
 
-docker run --rm -t -i --hostname=docker --user modeluser -v test_elmdata:/inputdata \
--v test_elmoutput:/output ${common_args} \
---scale_ndep=0.5 --startdate_scale_ndep=18500101 \
---scale_pdep=0.5 --startdate_scale_pdep=18500101 \
---scale_rain=0.5 --startdate_scale_rain=18500101 \
---scale_snow=0.5 --startdate_scale_snow=18500101 \
---add_temperature=-5.0 --startdate_add_temperature=18500101 \
---add_co2=-200.0 --startdate_add_co2=18500101 \
---case_prefix=sclless
+#docker run --rm -t -i --hostname=docker --user modeluser -v elmdata:/inputdata \
+#-v elmoutput:/output ${common_args} \
+#--scale_ndep=0.5 --startdate_scale_ndep=18500101 \
+#--scale_pdep=0.5 --startdate_scale_pdep=18500101 \
+#--scale_rain=0.5 --startdate_scale_rain=18500101 \
+#--scale_snow=0.5 --startdate_scale_snow=18500101 \
+#--add_temperature=-5.0 --startdate_add_temperature=18500101 \
+#--add_co2=-200.0 --startdate_add_co2=18500101 \
+#--case_prefix=sclless
 
 ############
 # test out cases we might actually want to run:
 ###########
-docker run --rm -t -i --hostname=docker --user modeluser -v elmdata:/inputdata -v elmoutput:/output ${common_args} --case_prefix="base"
+#docker run --rm -t -i --hostname=docker --user modeluser -v elmdata:/inputdata -v elmoutput:/output ${common_args} --case_prefix="base"
 
 docker run --rm -t -i --hostname=docker --user modeluser -v elmdata:/inputdata -v elmoutput:/output ${common_args} \
 --scale_snow=1.4 --startdate_scale_snow=18550101 --scale_rain=2.0 --startdate_scale_rain=18550101 --case_prefix="future_P"
@@ -131,15 +131,15 @@ docker run --rm -t -i --hostname=docker --user modeluser -v elmdata:/inputdata -
 --scale_pdep=2.0 --startdate_scale_pdep=18550101 --scale_ndep=2.0 --startdate_scale_ndep=18550101 \
 --case_prefix="double_NP"
 
-docker run --rm -t -i --hostname=docker --user modeluser -v elmdata:/inputdata -v elmoutput:/output ${common_args} \
---scale_pdep=0.5 --startdate_scale_pdep=18550101 --case_prefix="halfScale_P"
+#docker run --rm -t -i --hostname=docker --user modeluser -v elmdata:/inputdata -v elmoutput:/output ${common_args} \
+#--scale_pdep=0.5 --startdate_scale_pdep=18550101 --case_prefix="halfScale_P"
 
-docker run --rm -t -i --hostname=docker --user modeluser -v elmdata:/inputdata -v elmoutput:/output ${common_args} \
---scale_ndep=0.5 --startdate_scale_ndep=18550101 --case_prefix="halfScale_N"
+#docker run --rm -t -i --hostname=docker --user modeluser -v elmdata:/inputdata -v elmoutput:/output ${common_args} \
+#--scale_ndep=0.5 --startdate_scale_ndep=18550101 --case_prefix="halfScale_N"
 
-docker run --rm -t -i --hostname=docker --user modeluser -v elmdata:/inputdata -v elmoutput:/output ${common_args} \
---scale_ndep=0.5 --startdate_scale_ndep=18550101 --scale_pdep=0.5 --stardate_scale_pdep=18550101 \
---case_prefix="halfScale_NP" 
+#docker run --rm -t -i --hostname=docker --user modeluser -v elmdata:/inputdata -v elmoutput:/output ${common_args} \
+#--scale_ndep=0.5 --startdate_scale_ndep=18550101 --scale_pdep=0.5 --stardate_scale_pdep=18550101 \
+#--case_prefix="halfScale_NP" 
 
 # print some info to screen.
 echo " "
